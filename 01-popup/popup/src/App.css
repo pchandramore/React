@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/*
+  Popup animation
+
+  When the popup appears:
+
+  1. It starts slightly smaller
+  2. It starts slightly transparent
+  3. It grows to normal size
+  4. It becomes fully visible
+*/
+
+@keyframes popup {
+
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
