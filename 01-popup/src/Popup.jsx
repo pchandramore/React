@@ -3,14 +3,17 @@ import React from "react";
 const Popup = ({ isOpen, onClose }) => {
   return (
     <>
-      {/* 
-        Overlay
+      {/* =========================================
+          OVERLAY
+          
+          This is the dark background behind
+          the popup.
+          
+          Clicking this area will close the popup.
+          ========================================= */}
 
-        We keep the popup in the DOM even when it is closed.
-        Instead of removing it immediately, we change:
-        opacity + visibility + pointer events.
-      */}
       <div
+        onClick={onClose}
         className={`
           fixed
           inset-0
@@ -22,20 +25,30 @@ const Popup = ({ isOpen, onClose }) => {
           p-4
           transition-opacity
           duration-300
-          ${isOpen ? "visible opacity-100" : "invisible opacity-0"}
+          ${
+            isOpen
+              ? "visible opacity-100"
+              : "invisible opacity-0"
+          }
         `}
       >
 
-        {/* 
-          Popup box
+        {/* =========================================
+            POPUP CARD
 
-          When opening:
-          opacity-100 + scale-100
+            IMPORTANT:
 
-          When closing:
-          opacity-0 + scale-95
-        */}
+            The parent overlay has onClick={onClose}.
+
+            If we don't stop the click here,
+            clicking inside the popup will also
+            trigger the parent's onClick.
+
+            That's why we use stopPropagation().
+            ========================================= */}
+
         <div
+          onClick={(e) => e.stopPropagation()}
           className={`
             relative
             w-full
@@ -55,7 +68,10 @@ const Popup = ({ isOpen, onClose }) => {
           `}
         >
 
-          {/* Close button */}
+          {/* =========================================
+              CLOSE BUTTON
+              ========================================= */}
+
           <button
             onClick={onClose}
             className="
@@ -72,12 +88,16 @@ const Popup = ({ isOpen, onClose }) => {
               bg-white/90
               text-gray-700
               shadow-md
+
               transition-all
               duration-200
+
               hover:scale-110
               hover:bg-gray-100
               hover:text-black
+
               active:scale-95
+
               focus:outline-none
               focus:ring-2
               focus:ring-gray-400
@@ -88,7 +108,10 @@ const Popup = ({ isOpen, onClose }) => {
           </button>
 
 
-          {/* Promotional image */}
+          {/* =========================================
+              PROMOTIONAL IMAGE
+              ========================================= */}
+
           <img
             src="/popup-offer.jpg"
             alt="Special offer"
@@ -100,10 +123,13 @@ const Popup = ({ isOpen, onClose }) => {
           />
 
 
-          {/* Content */}
+          {/* =========================================
+              POPUP CONTENT
+              ========================================= */}
+
           <div className="px-6 py-8 text-center">
 
-            {/* Badge */}
+            {/* Small badge */}
             <span
               className="
                 inline-block
@@ -111,10 +137,12 @@ const Popup = ({ isOpen, onClose }) => {
                 bg-gray-100
                 px-4
                 py-1
+
                 text-sm
                 font-semibold
                 uppercase
                 tracking-wider
+
                 text-gray-700
               "
             >
@@ -142,8 +170,10 @@ const Popup = ({ isOpen, onClose }) => {
                 mx-auto
                 mt-3
                 max-w-md
+
                 text-base
                 leading-relaxed
+
                 text-gray-600
               "
             >
@@ -152,26 +182,36 @@ const Popup = ({ isOpen, onClose }) => {
             </p>
 
 
-            {/* CTA */}
+            {/* =========================================
+                SHOP NOW BUTTON
+                ========================================= */}
+
             <button
               className="
                 mt-6
                 w-full
                 rounded-xl
+
                 bg-black
                 px-6
                 py-3
+
                 text-base
                 font-semibold
                 text-white
+
                 shadow-sm
+
                 transition-all
                 duration-200
+
                 hover:-translate-y-0.5
                 hover:bg-gray-800
                 hover:shadow-lg
+
                 active:translate-y-0
                 active:scale-[0.98]
+
                 focus:outline-none
                 focus:ring-2
                 focus:ring-black
@@ -182,7 +222,9 @@ const Popup = ({ isOpen, onClose }) => {
             </button>
 
           </div>
+
         </div>
+
       </div>
     </>
   );

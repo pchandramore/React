@@ -2,33 +2,46 @@ import { useState } from "react";
 import Popup from "./Popup";
 
 function App() {
-
-  // Controls whether the popup is visible.
-  // true = open
-  // false = closed
+  // Controls whether the popup is open or closed.
+  //
+  // true  = popup is visible
+  // false = popup is closed
   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="min-h-screen bg-gray-100">
-
-      {/* Fake website content */}
+      
+      {/* ================================
+          WEBSITE HEADER
+          ================================ */}
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
 
-          <h1 className="text-xl font-bold">
+          {/* Website logo / name */}
+          <h1 className="text-xl font-bold text-gray-900">
             My Website
           </h1>
 
+          {/* Navigation */}
           <nav className="hidden gap-6 md:flex">
-            <a href="#" className="text-gray-600 hover:text-black">
+            <a
+              href="#"
+              className="text-gray-600 transition hover:text-black"
+            >
               Home
             </a>
 
-            <a href="#" className="text-gray-600 hover:text-black">
+            <a
+              href="#"
+              className="text-gray-600 transition hover:text-black"
+            >
               Products
             </a>
 
-            <a href="#" className="text-gray-600 hover:text-black">
+            <a
+              href="#"
+              className="text-gray-600 transition hover:text-black"
+            >
               About
             </a>
           </nav>
@@ -37,7 +50,9 @@ function App() {
       </header>
 
 
-      {/* Main website */}
+      {/* ================================
+          WEBSITE CONTENT
+          ================================ */}
       <main className="mx-auto max-w-7xl px-6 py-20">
 
         <div className="max-w-2xl">
@@ -51,7 +66,7 @@ function App() {
           </h2>
 
           <p className="mt-6 text-lg leading-relaxed text-gray-600">
-            This is an example website behind our promotional modal.
+            This is an example website behind our promotional popup.
           </p>
 
         </div>
@@ -59,7 +74,10 @@ function App() {
       </main>
 
 
-      {/* Promotional popup */}
+      {/* ================================
+          PROMOTIONAL POPUP
+          ================================ */}
+
       <Popup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
