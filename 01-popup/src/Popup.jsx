@@ -1,209 +1,140 @@
-const Popup = ({
-  popup,
-  setPopup,
-  title,
-  description,
-  type,
-}) => {
+import React from "react";
 
-  // If popup is false,
-  // return nothing.
-  //
-  // This means the popup will NOT exist in the UI.
-  if (!popup) {
+const Popup = ({ isOpen, onClose }) => {
+
+  // If the popup is not open,
+  // don't render anything.
+  if (!isOpen) {
     return null;
   }
 
-
-  // Function to close popup
-  const closePopup = () => {
-    setPopup(false);
-  };
-
-
   return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
 
-    /*
-      fixed = popup stays relative to browser window
+      {/* 
+        Popup container
 
-      inset-0 =
+        max-w-lg  → maximum width
+        w-full    → responsive width
+        rounded-2xl → rounded corners
+        shadow-2xl → large shadow
+      */}
+      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
 
-      top: 0
-      right: 0
-      bottom: 0
-      left: 0
-
-      So this overlay covers the entire screen.
-    */
-    <div
-      className="
-        fixed
-        inset-0
-        z-50
-        flex
-        items-center
-        justify-center
-        bg-black/60
-        backdrop-blur-sm
-        p-4
-      "
-    >
-
-      {/* =================================================
-          POPUP BOX
-          ================================================= */}
-
-      <div
-        className="
-          relative
-          w-full
-          max-w-md
-          rounded-2xl
-          bg-white
-          shadow-2xl
-          overflow-hidden
-          animate-[popup_0.2s_ease-out]
-        "
-      >
-
-        {/* =================================================
-            CLOSE BUTTON
-            ================================================= */}
-
+        {/* Close button */}
         <button
-          onClick={closePopup}
+          onClick={onClose}
           className="
             absolute
-            top-4
             right-4
-            w-9
-            h-9
+            top-4
+            z-10
             flex
+            h-9
+            w-9
             items-center
             justify-center
             rounded-full
-            bg-slate-100
-            text-slate-500
-            hover:bg-slate-200
-            hover:text-slate-800
+            bg-white/90
+            text-gray-700
+            shadow-md
             transition
+            hover:bg-gray-100
+            hover:text-black
+            focus:outline-none
+            focus:ring-2
+            focus:ring-gray-400
           "
+          aria-label="Close popup"
         >
           ✕
         </button>
 
 
-        {/* =================================================
-            ICON
-            ================================================= */}
+        {/* Image */}
+        <img
+          src="/popup-offer.jpg"
+          alt="Special offer"
+          className="h-64 w-full object-cover"
+        />
 
-        <div className="flex justify-center pt-8">
 
-          <div
-            className={`
-              w-16
-              h-16
+        {/* Content */}
+        <div className="px-6 py-8 text-center">
+
+          {/* Small label */}
+          <span
+            className="
+              inline-block
               rounded-full
-              flex
-              items-center
-              justify-center
-              text-3xl
-
-              ${
-                type === "delete"
-                  ? "bg-red-100"
-                  : "bg-blue-100"
-              }
-            `}
+              bg-gray-100
+              px-4
+              py-1
+              text-sm
+              font-semibold
+              uppercase
+              tracking-wider
+              text-gray-700
+            "
           >
-
-            {type === "delete" ? "🗑️" : "✏️"}
-
-          </div>
-
-        </div>
+            Special Offer
+          </span>
 
 
-        {/* =================================================
-            TITLE + DESCRIPTION
-            ================================================= */}
-
-        <div className="text-center px-6 pt-5">
-
-          {/* Popup title */}
-
-          <h2 className="text-2xl font-bold text-slate-800">
-            {title}
+          {/* Heading */}
+          <h2
+            className="
+              mt-4
+              text-3xl
+              font-bold
+              tracking-tight
+              text-gray-900
+            "
+          >
+            Get 20% Off
           </h2>
 
 
-          {/* Popup description */}
-
-          <p className="mt-3 text-slate-500 leading-relaxed">
-            {description}
-          </p>
-
-        </div>
-
-
-        {/* =================================================
-            BUTTONS
-            ================================================= */}
-
-        <div className="flex gap-3 px-6 py-6">
-
-          {/* ---------------------------------------------
-              NO / CANCEL BUTTON
-              --------------------------------------------- */}
-
-          <button
-            onClick={closePopup}
+          {/* Description */}
+          <p
             className="
-              flex-1
-              px-5
-              py-3
-              rounded-xl
-              border
-              border-slate-300
-              bg-white
-              text-slate-700
-              font-semibold
-              hover:bg-slate-50
-              transition
+              mx-auto
+              mt-3
+              max-w-md
+              text-base
+              leading-relaxed
+              text-gray-600
             "
           >
-            No, Cancel
-          </button>
+            Discover our latest collection and enjoy
+            20% off your first order.
+          </p>
 
 
-          {/* ---------------------------------------------
-              YES BUTTON
-              --------------------------------------------- */}
-
+          {/* CTA */}
           <button
-            onClick={closePopup}
-            className={`
-              flex-1
-              px-5
-              py-3
+            className="
+              mt-6
+              w-full
               rounded-xl
-              text-white
+              bg-black
+              px-6
+              py-3
+              text-base
               font-semibold
+              text-white
               transition
-              active:scale-95
-
-              ${
-                type === "delete"
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }
-            `}
+              duration-200
+              hover:bg-gray-800
+              hover:shadow-lg
+              active:scale-[0.98]
+              focus:outline-none
+              focus:ring-2
+              focus:ring-black
+              focus:ring-offset-2
+            "
           >
-
-            {type === "delete"
-              ? "Yes, Delete"
-              : "Yes, Edit"}
-
+            Shop Now
           </button>
 
         </div>

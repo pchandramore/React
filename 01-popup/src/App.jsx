@@ -1,31 +1,69 @@
 import { useState } from "react";
+import Popup from "./Popup";
 
 function App() {
 
-  // State controls whether the popup is visible
+  // Controls whether the popup is visible.
+  // true = open
+  // false = closed
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100">
 
-      <h1>My Website</h1>
+      {/* Fake website content */}
+      <header className="border-b bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
 
-      {/* Show popup only when isOpen is true */}
-      {isOpen && (
-        <div>
+          <h1 className="text-xl font-bold">
+            My Website
+          </h1>
 
-          <h2>Special Offer</h2>
+          <nav className="hidden gap-6 md:flex">
+            <a href="#" className="text-gray-600 hover:text-black">
+              Home
+            </a>
 
-          <p>
-            Get 20% off your first order.
-          </p>
+            <a href="#" className="text-gray-600 hover:text-black">
+              Products
+            </a>
 
-          <button onClick={() => setIsOpen(false)}>
-            Close
-          </button>
+            <a href="#" className="text-gray-600 hover:text-black">
+              About
+            </a>
+          </nav>
 
         </div>
-      )}
+      </header>
+
+
+      {/* Main website */}
+      <main className="mx-auto max-w-7xl px-6 py-20">
+
+        <div className="max-w-2xl">
+
+          <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+            New Collection
+          </p>
+
+          <h2 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 md:text-6xl">
+            Welcome to our website
+          </h2>
+
+          <p className="mt-6 text-lg leading-relaxed text-gray-600">
+            This is an example website behind our promotional modal.
+          </p>
+
+        </div>
+
+      </main>
+
+
+      {/* Promotional popup */}
+      <Popup
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
 
     </div>
   );
