@@ -1,16 +1,78 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const Popup = ({ isOpen, onClose }) => {
+
+  /*
+    ========================================================
+    ESC KEY FUNCTIONALITY
+    ========================================================
+
+    useEffect allows us to perform a side effect.
+
+    In this case, we want to listen to keyboard events
+    on the browser window.
+  */
+
+  useEffect(() => {
+
+    /*
+      This function runs whenever a key is pressed.
+    */
+
+    const handleKeyDown = (event) => {
+
+      /*
+        Check which key was pressed.
+
+        If the user presses Escape,
+        close the popup.
+      */
+
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+
+    /*
+      Add the keyboard event listener.
+
+      window listens for keyboard events
+      anywhere on the page.
+    */
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+
+    /*
+      CLEANUP FUNCTION
+      ----------------
+
+      When the component is removed or the effect
+      runs again, remove the event listener.
+
+      This prevents multiple event listeners from
+      being created.
+    */
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+
+  }, [onClose]);
+
+
   return (
     <>
-      {/* =========================================
+      {/* ==================================================
           OVERLAY
-          
-          This is the dark background behind
-          the popup.
-          
-          Clicking this area will close the popup.
-          ========================================= */}
+          ================================================== */}
 
       <div
         onClick={onClose}
@@ -23,8 +85,10 @@ const Popup = ({ isOpen, onClose }) => {
           justify-center
           bg-black/60
           p-4
+
           transition-opacity
           duration-300
+
           ${
             isOpen
               ? "visible opacity-100"
@@ -33,22 +97,20 @@ const Popup = ({ isOpen, onClose }) => {
         `}
       >
 
-        {/* =========================================
+        {/* ==================================================
             POPUP CARD
-
-            IMPORTANT:
-
-            The parent overlay has onClick={onClose}.
-
-            If we don't stop the click here,
-            clicking inside the popup will also
-            trigger the parent's onClick.
-
-            That's why we use stopPropagation().
-            ========================================= */}
+            ================================================== */}
 
         <div
-          onClick={(e) => e.stopPropagation()}
+          /*
+            Prevent click events inside the popup
+            from reaching the overlay.
+          */
+
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+
           className={`
             relative
             w-full
@@ -57,9 +119,11 @@ const Popup = ({ isOpen, onClose }) => {
             rounded-2xl
             bg-white
             shadow-2xl
+
             transition-all
             duration-300
             ease-out
+
             ${
               isOpen
                 ? "scale-100 opacity-100"
@@ -68,25 +132,30 @@ const Popup = ({ isOpen, onClose }) => {
           `}
         >
 
-          {/* =========================================
+          {/* ==================================================
               CLOSE BUTTON
-              ========================================= */}
+              ================================================== */}
 
           <button
             onClick={onClose}
+
             className="
               absolute
               right-4
               top-4
               z-10
+
               flex
               h-9
               w-9
               items-center
               justify-center
+
               rounded-full
               bg-white/90
+
               text-gray-700
+
               shadow-md
 
               transition-all
@@ -102,19 +171,21 @@ const Popup = ({ isOpen, onClose }) => {
               focus:ring-2
               focus:ring-gray-400
             "
+
             aria-label="Close popup"
           >
             ✕
           </button>
 
 
-          {/* =========================================
+          {/* ==================================================
               PROMOTIONAL IMAGE
-              ========================================= */}
+              ================================================== */}
 
           <img
             src="/popup-offer.jpg"
             alt="Special offer"
+
             className="
               h-64
               w-full
@@ -123,18 +194,22 @@ const Popup = ({ isOpen, onClose }) => {
           />
 
 
-          {/* =========================================
+          {/* ==================================================
               POPUP CONTENT
-              ========================================= */}
+              ================================================== */}
 
           <div className="px-6 py-8 text-center">
 
-            {/* Small badge */}
+            {/* Badge */}
+
             <span
               className="
                 inline-block
+
                 rounded-full
+
                 bg-gray-100
+
                 px-4
                 py-1
 
@@ -151,12 +226,15 @@ const Popup = ({ isOpen, onClose }) => {
 
 
             {/* Heading */}
+
             <h2
               className="
                 mt-4
+
                 text-3xl
                 font-bold
                 tracking-tight
+
                 text-gray-900
               "
             >
@@ -165,6 +243,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
             {/* Description */}
+
             <p
               className="
                 mx-auto
@@ -182,22 +261,25 @@ const Popup = ({ isOpen, onClose }) => {
             </p>
 
 
-            {/* =========================================
+            {/* ==================================================
                 SHOP NOW BUTTON
-                ========================================= */}
+                ================================================== */}
 
             <button
               className="
                 mt-6
                 w-full
+
                 rounded-xl
 
                 bg-black
+
                 px-6
                 py-3
 
                 text-base
                 font-semibold
+
                 text-white
 
                 shadow-sm
