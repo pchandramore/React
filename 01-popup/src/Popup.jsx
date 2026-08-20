@@ -3,27 +3,26 @@ import React, { useEffect } from "react";
 const Popup = ({ isOpen, onClose }) => {
 
   /*
-    ========================================================
-    ESC KEY FUNCTIONALITY
-    ========================================================
+  ========================================================
+  ESC KEY + BODY SCROLL LOCK
+  ========================================================
 
-    useEffect allows us to perform a side effect.
+  This effect handles:
 
-    In this case, we want to listen to keyboard events
-    on the browser window.
+  1. Closing the popup with the Escape key.
+  2. Preventing the website behind the popup from scrolling.
   */
 
   useEffect(() => {
 
     /*
-      This function runs whenever a key is pressed.
+      Function that runs whenever
+      a keyboard key is pressed.
     */
 
     const handleKeyDown = (event) => {
 
       /*
-        Check which key was pressed.
-
         If the user presses Escape,
         close the popup.
       */
@@ -35,10 +34,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
     /*
-      Add the keyboard event listener.
-
-      window listens for keyboard events
-      anywhere on the page.
+      Add keyboard event listener.
     */
 
     window.addEventListener(
@@ -48,24 +44,58 @@ const Popup = ({ isOpen, onClose }) => {
 
 
     /*
-      CLEANUP FUNCTION
-      ----------------
+    ========================================================
+    PREVENT BACKGROUND SCROLL
+    ========================================================
 
-      When the component is removed or the effect
-      runs again, remove the event listener.
+    If popup is open:
 
-      This prevents multiple event listeners from
-      being created.
+    overflow: hidden
+
+    prevents the website behind the popup
+    from scrolling.
+    */
+
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+
+
+    /*
+    ========================================================
+    CLEANUP FUNCTION
+    ========================================================
+
+    This runs when:
+
+    - popup closes
+    - component is removed
+    - dependencies change
+
+    We remove the event listener
+    and restore normal scrolling.
     */
 
     return () => {
+
+      /*
+        Remove keyboard listener.
+      */
+
       window.removeEventListener(
         "keydown",
         handleKeyDown
       );
+
+
+      /*
+        Restore normal body scrolling.
+      */
+
+      document.body.style.overflow = "";
     };
 
-  }, [onClose]);
+  }, [isOpen, onClose]);
 
 
   return (
@@ -76,14 +106,18 @@ const Popup = ({ isOpen, onClose }) => {
 
       <div
         onClick={onClose}
+
         className={`
           fixed
           inset-0
           z-50
+
           flex
           items-center
           justify-center
+
           bg-black/60
+
           p-4
 
           transition-opacity
@@ -102,9 +136,10 @@ const Popup = ({ isOpen, onClose }) => {
             ================================================== */}
 
         <div
+
           /*
-            Prevent click events inside the popup
-            from reaching the overlay.
+            Prevent clicks inside the popup
+            from closing the popup.
           */
 
           onClick={(event) => {
@@ -113,11 +148,16 @@ const Popup = ({ isOpen, onClose }) => {
 
           className={`
             relative
+
             w-full
             max-w-lg
+
             overflow-hidden
+
             rounded-2xl
+
             bg-white
+
             shadow-2xl
 
             transition-all
@@ -148,10 +188,12 @@ const Popup = ({ isOpen, onClose }) => {
               flex
               h-9
               w-9
+
               items-center
               justify-center
 
               rounded-full
+
               bg-white/90
 
               text-gray-700
@@ -184,6 +226,7 @@ const Popup = ({ isOpen, onClose }) => {
 
           <img
             src="/popup-offer.jpg"
+
             alt="Special offer"
 
             className="
