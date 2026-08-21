@@ -238,113 +238,148 @@ const Navbar = () => {
           render nothing.
       */}
 
-      {isMenuOpen && (
+      {/* ==================================================
+    MOBILE NAVIGATION
+    ==================================================
 
-        <div
-          className="
-            border-t
-            bg-white
-            md:hidden
-          "
-        >
+    Instead of completely removing the menu
+    from the DOM, we keep it in the DOM and
+    animate its height and opacity.
 
-          <div
-            className="
-              mx-auto
-              max-w-7xl
-              px-6
-              py-4
-            "
-          >
+    CLOSED:
 
-            <nav className="flex flex-col">
+    max-h-0
+    opacity-0
 
-              <a
-                href="#"
-                className="
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-gray-700
+    OPEN:
 
-                  transition
+    max-h-96
+    opacity-100
+    ================================================== */}
 
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                Home
-              </a>
+<div
+  className={`
+    overflow-hidden
+    border-t
+    bg-white
 
+    transition-all
+    duration-300
+    ease-in-out
 
-              <a
-                href="#"
-                className="
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-gray-700
+    md:hidden
 
-                  transition
+    ${
+      isMenuOpen
+        ? "max-h-96 opacity-100"
+        : "max-h-0 opacity-0"
+    }
+  `}
+>
 
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                About
-              </a>
+  <div
+    className="
+      mx-auto
+      max-w-7xl
+      px-6
+      py-4
+    "
+  >
 
+    <nav className="flex flex-col">
 
-              <a
-                href="#"
-                className="
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-gray-700
+      {/* HOME */}
 
-                  transition
+      <a
+        href="#"
+        className="
+          rounded-lg
+          px-4
+          py-3
+          text-sm
+          font-medium
+          text-gray-700
 
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                Services
-              </a>
+          transition
+
+          hover:bg-gray-100
+          hover:text-black
+        "
+      >
+        Home
+      </a>
 
 
-              <a
-                href="#"
-                className="
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-gray-700
+      {/* ABOUT */}
 
-                  transition
+      <a
+        href="#"
+        className="
+          rounded-lg
+          px-4
+          py-3
+          text-sm
+          font-medium
+          text-gray-700
 
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                Contact
-              </a>
+          transition
 
-            </nav>
+          hover:bg-gray-100
+          hover:text-black
+        "
+      >
+        About
+      </a>
 
-          </div>
 
-        </div>
+      {/* SERVICES */}
 
-      )}
+      <a
+        href="#"
+        className="
+          rounded-lg
+          px-4
+          py-3
+          text-sm
+          font-medium
+          text-gray-700
+
+          transition
+
+          hover:bg-gray-100
+          hover:text-black
+        "
+      >
+        Services
+      </a>
+
+
+      {/* CONTACT */}
+
+      <a
+        href="#"
+        className="
+          rounded-lg
+          px-4
+          py-3
+          text-sm
+          font-medium
+          text-gray-700
+
+          transition
+
+          hover:bg-gray-100
+          hover:text-black
+        "
+      >
+        Contact
+      </a>
+
+    </nav>
+
+  </div>
+
+</div>
 
     </nav>
   );
