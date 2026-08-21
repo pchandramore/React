@@ -1,18 +1,26 @@
 import React, { useEffect, useRef } from "react";
 
-const Popup = ({ isOpen, onClose }) => {
+const Popup = ({
+  isOpen,
+  onClose,
+
+  // Content received from App.jsx
+  badge,
+  title,
+  description,
+  image,
+  buttonText,
+}) => {
 
   /*
   ========================================================
   CLOSE BUTTON REF
   ========================================================
 
-  useRef allows us to directly access a DOM element.
+  useRef gives us access to the actual Close button.
 
-  Here we will use it to access the Close button.
-
-  When the popup opens, we will move keyboard focus
-  to this button.
+  We use it to move keyboard focus into the popup
+  when the popup opens.
   */
 
   const closeButtonRef = useRef(null);
@@ -22,29 +30,19 @@ const Popup = ({ isOpen, onClose }) => {
   ========================================================
   ESC KEY + BODY SCROLL LOCK + FOCUS
   ========================================================
-
-  This effect handles:
-
-  1. Closing popup with Escape.
-  2. Preventing background scrolling.
-  3. Moving keyboard focus inside the popup.
   */
 
   useEffect(() => {
 
     /*
-    ======================================================
+    --------------------------------------------------------
     ESC KEY HANDLER
-    ======================================================
+    --------------------------------------------------------
     */
 
     const handleKeyDown = (event) => {
 
-      /*
-        If user presses Escape,
-        close the popup.
-      */
-
+      // Close popup when Escape is pressed.
       if (event.key === "Escape") {
         onClose();
       }
@@ -52,7 +50,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
     /*
-    Add keyboard listener to browser window.
+    Add keyboard listener.
     */
 
     window.addEventListener(
@@ -62,12 +60,16 @@ const Popup = ({ isOpen, onClose }) => {
 
 
     /*
-    ======================================================
-    BODY SCROLL LOCK
-    ======================================================
+    --------------------------------------------------------
+    PREVENT BACKGROUND SCROLL
+    --------------------------------------------------------
 
-    When popup is open, prevent the page behind
-    the popup from scrolling.
+    When popup is open:
+
+    body overflow = hidden
+
+    This prevents the website behind the popup
+    from scrolling.
     */
 
     if (isOpen) {
@@ -76,15 +78,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
       /*
-      ====================================================
-      MOVE FOCUS INTO POPUP
-      ====================================================
-
-      When the popup becomes visible,
-      focus the Close button.
-
-      This means a keyboard user does not have
-      to press Tab many times to reach the popup.
+      Move keyboard focus to Close button.
       */
 
       closeButtonRef.current?.focus();
@@ -92,15 +86,24 @@ const Popup = ({ isOpen, onClose }) => {
 
 
     /*
-    ======================================================
+    --------------------------------------------------------
     CLEANUP
-    ======================================================
+    --------------------------------------------------------
+
+    Cleanup is extremely important when using:
+
+    - event listeners
+    - timers
+    - subscriptions
+    - document/window changes
+
+    We undo what we did above.
     */
 
     return () => {
 
       /*
-        Remove keyboard listener.
+      Remove keyboard listener.
       */
 
       window.removeEventListener(
@@ -110,7 +113,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
       /*
-        Restore normal page scrolling.
+      Restore normal page scrolling.
       */
 
       document.body.style.overflow = "";
@@ -158,11 +161,8 @@ const Popup = ({ isOpen, onClose }) => {
 
         <div
           /*
-            Stop click events from reaching
-            the overlay.
-
-            Otherwise clicking inside the popup
-            would also trigger onClose().
+          Prevent clicking inside the popup from
+          closing the popup.
           */
 
           onClick={(event) => {
@@ -170,17 +170,7 @@ const Popup = ({ isOpen, onClose }) => {
           }}
 
           /*
-            Accessibility:
-
-            role="dialog"
-
-            tells screen readers that this element
-            is a dialog/modal window.
-
-            aria-modal="true"
-
-            tells assistive technologies that the
-            popup is currently modal.
+          Accessibility
           */
 
           role="dialog"
@@ -219,13 +209,6 @@ const Popup = ({ isOpen, onClose }) => {
               ================================================== */}
 
           <button
-            /*
-              Attach our ref to this button.
-
-              closeButtonRef.current will point
-              to this actual button element.
-            */
-
             ref={closeButtonRef}
 
             onClick={onClose}
@@ -276,9 +259,8 @@ const Popup = ({ isOpen, onClose }) => {
               ================================================== */}
 
           <img
-            src="/popup-offer.jpg"
-
-            alt="Special offer"
+            src={image}
+            alt={title}
 
             className="
               h-64
@@ -294,57 +276,44 @@ const Popup = ({ isOpen, onClose }) => {
 
           <div className="px-6 py-8 text-center">
 
-            {/* ==================================================
-                BADGE
-                ================================================== */}
+            {/* Badge */}
 
             <span
               className="
                 inline-block
-
                 rounded-full
-
                 bg-gray-100
-
                 px-4
                 py-1
-
                 text-sm
                 font-semibold
                 uppercase
                 tracking-wider
-
                 text-gray-700
               "
             >
-              Special Offer
+              {badge}
             </span>
 
 
-            {/* ==================================================
-                HEADING
-                ================================================== */}
+            {/* Heading */}
 
             <h2
               id="popup-title"
 
               className="
                 mt-4
-
                 text-3xl
                 font-bold
                 tracking-tight
-
                 text-gray-900
               "
             >
-              Get 20% Off
+              {title}
             </h2>
 
 
-            {/* ==================================================
-                DESCRIPTION
-                ================================================== */}
+            {/* Description */}
 
             <p
               id="popup-description"
@@ -353,39 +322,28 @@ const Popup = ({ isOpen, onClose }) => {
                 mx-auto
                 mt-3
                 max-w-md
-
                 text-base
                 leading-relaxed
-
                 text-gray-600
               "
             >
-              Discover our latest collection and enjoy
-              20% off your first order.
+              {description}
             </p>
 
 
-            {/* ==================================================
-                SHOP NOW BUTTON
-                ================================================== */}
+            {/* CTA BUTTON */}
 
             <button
               className="
                 mt-6
                 w-full
-
                 rounded-xl
-
                 bg-black
-
                 px-6
                 py-3
-
                 text-base
                 font-semibold
-
                 text-white
-
                 shadow-sm
 
                 transition-all
@@ -404,7 +362,7 @@ const Popup = ({ isOpen, onClose }) => {
                 focus:ring-offset-2
               "
             >
-              Shop Now
+              {buttonText}
             </button>
 
           </div>
