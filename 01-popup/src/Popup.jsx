@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useRef
-} from "react";
-
+import React, { useEffect, useRef } from "react";
 
 const Popup = ({ isOpen, onClose }) => {
 
@@ -11,11 +7,12 @@ const Popup = ({ isOpen, onClose }) => {
   CLOSE BUTTON REF
   ========================================================
 
-  We use useRef to get access to the actual
-  Close button DOM element.
+  useRef allows us to directly access a DOM element.
 
-  We will use this when the popup opens
-  to automatically move focus to the Close button.
+  Here we will use it to access the Close button.
+
+  When the popup opens, we will move keyboard focus
+  to this button.
   */
 
   const closeButtonRef = useRef(null);
@@ -23,221 +20,39 @@ const Popup = ({ isOpen, onClose }) => {
 
   /*
   ========================================================
-  POPUP CONTAINER REF
+  ESC KEY + BODY SCROLL LOCK + FOCUS
   ========================================================
 
-  This ref gives us access to the popup itself.
+  This effect handles:
 
-  We need this because we want to find
-  all focusable elements INSIDE the popup.
-
-  Example:
-
-  - Close button
-  - Shop Now button
-  - Input
-  - Link
-  */
-
-  const popupRef = useRef(null);
-
-
-  /*
-  ========================================================
-  ESC KEY + SCROLL LOCK + FOCUS TRAP
-  ========================================================
-
-  This useEffect handles several things:
-
-  1. Escape key
-  2. Background scroll lock
-  3. Initial keyboard focus
-  4. Focus trapping
+  1. Closing popup with Escape.
+  2. Preventing background scrolling.
+  3. Moving keyboard focus inside the popup.
   */
 
   useEffect(() => {
 
     /*
-    ========================================================
-    ESCAPE KEY
-    ========================================================
+    ======================================================
+    ESC KEY HANDLER
+    ======================================================
     */
 
     const handleKeyDown = (event) => {
 
       /*
-        If the user presses Escape,
+        If user presses Escape,
         close the popup.
       */
 
       if (event.key === "Escape") {
-
         onClose();
-
-        return;
-      }
-
-
-      /*
-      ======================================================
-      FOCUS TRAP
-      ======================================================
-
-      We only need this logic when
-      the popup is open.
-      */
-
-      if (
-        event.key === "Tab" &&
-        isOpen
-      ) {
-
-        /*
-        ----------------------------------------------------
-        FIND ALL FOCUSABLE ELEMENTS
-        ----------------------------------------------------
-
-        querySelectorAll searches inside
-        the popup for elements that users
-        can focus with the keyboard.
-
-        Examples:
-
-        button
-        input
-        select
-        textarea
-        links
-        ----------------------------------------------------
-        */
-
-        const focusableElements =
-          popupRef.current?.querySelectorAll(
-            `
-            button,
-            [href],
-            input,
-            select,
-            textarea,
-            [tabindex]:not([tabindex="-1"])
-            `
-          );
-
-
-        /*
-        ----------------------------------------------------
-        SAFETY CHECK
-        ----------------------------------------------------
-
-        If there are no focusable elements,
-        stop here.
-        ----------------------------------------------------
-        */
-
-        if (
-          !focusableElements ||
-          focusableElements.length === 0
-        ) {
-          return;
-        }
-
-
-        /*
-        ----------------------------------------------------
-        GET FIRST AND LAST ELEMENT
-        ----------------------------------------------------
-        */
-
-        const firstElement =
-          focusableElements[0];
-
-        const lastElement =
-          focusableElements[
-            focusableElements.length - 1
-          ];
-
-
-        /*
-        ----------------------------------------------------
-        SHIFT + TAB
-        ----------------------------------------------------
-
-        If the user is on the FIRST element
-        and presses:
-
-        Shift + Tab
-
-        normally the browser would move
-        focus outside the popup.
-
-        Instead we move focus to the LAST
-        element.
-        */
-
-        if (
-          event.shiftKey &&
-          document.activeElement === firstElement
-        ) {
-
-          /*
-            Prevent the browser's
-            default focus movement.
-          */
-
-          event.preventDefault();
-
-
-          /*
-            Move focus to the last
-            focusable element.
-          */
-
-          lastElement.focus();
-        }
-
-
-        /*
-        ----------------------------------------------------
-        NORMAL TAB
-        ----------------------------------------------------
-
-        If the user is on the LAST element
-        and presses Tab:
-
-        normally focus would leave the popup.
-
-        We prevent that and move focus
-        back to the FIRST element.
-        */
-
-        else if (
-          !event.shiftKey &&
-          document.activeElement === lastElement
-        ) {
-
-          /*
-            Stop normal browser
-            Tab behaviour.
-          */
-
-          event.preventDefault();
-
-
-          /*
-            Move focus back to
-            the first element.
-          */
-
-          firstElement.focus();
-        }
       }
     };
 
 
     /*
-    ========================================================
-    ADD KEYBOARD EVENT LISTENER
-    ========================================================
+    Add keyboard listener to browser window.
     */
 
     window.addEventListener(
@@ -247,46 +62,39 @@ const Popup = ({ isOpen, onClose }) => {
 
 
     /*
-    ========================================================
-    POPUP OPEN LOGIC
-    ========================================================
+    ======================================================
+    BODY SCROLL LOCK
+    ======================================================
+
+    When popup is open, prevent the page behind
+    the popup from scrolling.
     */
 
     if (isOpen) {
-
-      /*
-      ------------------------------------------------------
-      PREVENT BACKGROUND SCROLL
-      ------------------------------------------------------
-
-      The page behind the popup
-      cannot scroll.
-      */
 
       document.body.style.overflow = "hidden";
 
 
       /*
-      ------------------------------------------------------
-      MOVE FOCUS TO CLOSE BUTTON
-      ------------------------------------------------------
+      ====================================================
+      MOVE FOCUS INTO POPUP
+      ====================================================
 
-      requestAnimationFrame waits until
-      the popup has been rendered.
+      When the popup becomes visible,
+      focus the Close button.
+
+      This means a keyboard user does not have
+      to press Tab many times to reach the popup.
       */
 
-      requestAnimationFrame(() => {
-
-        closeButtonRef.current?.focus();
-
-      });
+      closeButtonRef.current?.focus();
     }
 
 
     /*
-    ========================================================
+    ======================================================
     CLEANUP
-    ========================================================
+    ======================================================
     */
 
     return () => {
@@ -302,7 +110,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
       /*
-        Restore normal scrolling.
+        Restore normal page scrolling.
       */
 
       document.body.style.overflow = "";
@@ -318,12 +126,6 @@ const Popup = ({ isOpen, onClose }) => {
           ================================================== */}
 
       <div
-
-        /*
-          Clicking the dark background
-          closes the popup.
-        */
-
         onClick={onClose}
 
         className={`
@@ -350,60 +152,41 @@ const Popup = ({ isOpen, onClose }) => {
         `}
       >
 
-
         {/* ==================================================
             POPUP CARD
             ================================================== */}
 
         <div
-
           /*
-          ==================================================
-          POPUP REF
-          ==================================================
+            Stop click events from reaching
+            the overlay.
 
-          We connect popupRef to this element.
-
-          This allows JavaScript to search
-          for focusable elements inside it.
-          */
-
-          ref={popupRef}
-
-
-          /*
-          ==================================================
-          ACCESSIBILITY
-          ==================================================
-          */
-
-          role="dialog"
-
-          aria-modal="true"
-
-          aria-labelledby="popup-title"
-
-          aria-describedby="popup-description"
-
-
-          /*
-          ==================================================
-          PREVENT BACKGROUND CLICK
-          ==================================================
-
-          Clicking inside the popup should NOT
-          close the popup.
-
-          Only clicking the dark overlay
-          should close it.
+            Otherwise clicking inside the popup
+            would also trigger onClose().
           */
 
           onClick={(event) => {
-
             event.stopPropagation();
-
           }}
 
+          /*
+            Accessibility:
+
+            role="dialog"
+
+            tells screen readers that this element
+            is a dialog/modal window.
+
+            aria-modal="true"
+
+            tells assistive technologies that the
+            popup is currently modal.
+          */
+
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="popup-title"
+          aria-describedby="popup-description"
 
           className={`
             relative
@@ -431,31 +214,21 @@ const Popup = ({ isOpen, onClose }) => {
           `}
         >
 
-
           {/* ==================================================
               CLOSE BUTTON
               ================================================== */}
 
           <button
-
             /*
-            ==================================================
-            CLOSE BUTTON REF
-            ==================================================
+              Attach our ref to this button.
 
-            This allows us to move keyboard focus
-            to the Close button when the popup opens.
+              closeButtonRef.current will point
+              to this actual button element.
             */
 
             ref={closeButtonRef}
 
-
-            /*
-              Close popup.
-            */
-
             onClick={onClose}
-
 
             className="
               absolute
@@ -492,20 +265,9 @@ const Popup = ({ isOpen, onClose }) => {
               focus:ring-gray-400
             "
 
-
-            /*
-              Accessibility label.
-
-              Screen readers will say:
-
-              "Close popup"
-            */
-
             aria-label="Close popup"
           >
-
             ✕
-
           </button>
 
 
@@ -514,7 +276,6 @@ const Popup = ({ isOpen, onClose }) => {
               ================================================== */}
 
           <img
-
             src="/popup-offer.jpg"
 
             alt="Special offer"
@@ -531,14 +292,7 @@ const Popup = ({ isOpen, onClose }) => {
               POPUP CONTENT
               ================================================== */}
 
-          <div
-            className="
-              px-6
-              py-8
-              text-center
-            "
-          >
-
+          <div className="px-6 py-8 text-center">
 
             {/* ==================================================
                 BADGE
@@ -563,9 +317,7 @@ const Popup = ({ isOpen, onClose }) => {
                 text-gray-700
               "
             >
-
               Special Offer
-
             </span>
 
 
@@ -574,7 +326,6 @@ const Popup = ({ isOpen, onClose }) => {
                 ================================================== */}
 
             <h2
-
               id="popup-title"
 
               className="
@@ -587,9 +338,7 @@ const Popup = ({ isOpen, onClose }) => {
                 text-gray-900
               "
             >
-
               Get 20% Off
-
             </h2>
 
 
@@ -598,7 +347,6 @@ const Popup = ({ isOpen, onClose }) => {
                 ================================================== */}
 
             <p
-
               id="popup-description"
 
               className="
@@ -612,10 +360,8 @@ const Popup = ({ isOpen, onClose }) => {
                 text-gray-600
               "
             >
-
               Discover our latest collection and enjoy
               20% off your first order.
-
             </p>
 
 
@@ -624,7 +370,6 @@ const Popup = ({ isOpen, onClose }) => {
                 ================================================== */}
 
             <button
-
               className="
                 mt-6
                 w-full
@@ -659,9 +404,7 @@ const Popup = ({ isOpen, onClose }) => {
                 focus:ring-offset-2
               "
             >
-
               Shop Now
-
             </button>
 
           </div>
@@ -672,6 +415,5 @@ const Popup = ({ isOpen, onClose }) => {
     </>
   );
 };
-
 
 export default Popup;
