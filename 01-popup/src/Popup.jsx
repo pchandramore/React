@@ -1,40 +1,71 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const Popup = ({ isOpen, onClose }) => {
 
   /*
   ========================================================
-  ESC KEY + BODY SCROLL LOCK
+  REFS
+  ========================================================
+
+  useRef allows us to directly access a DOM element.
+
+  We will use this to access the Close button.
+
+  When the popup opens, we will automatically
+  move keyboard focus to this button.
+  */
+
+  const closeButtonRef = useRef(null);
+
+
+  /*
+  ========================================================
+  ESC KEY + BODY SCROLL LOCK + FOCUS
   ========================================================
 
   This effect handles:
 
-  1. Closing the popup with the Escape key.
-  2. Preventing the website behind the popup from scrolling.
+  1. Closing popup with Escape.
+  2. Preventing background scrolling.
+  3. Moving focus to the Close button.
   */
 
   useEffect(() => {
 
     /*
-      Function that runs whenever
-      a keyboard key is pressed.
+    ========================================================
+    ESC KEY HANDLER
+    ========================================================
+
+    This function runs whenever a keyboard key
+    is pressed anywhere on the page.
     */
 
     const handleKeyDown = (event) => {
 
       /*
-        If the user presses Escape,
-        close the popup.
+        Check whether the pressed key is Escape.
       */
 
       if (event.key === "Escape") {
+
+        /*
+          Close the popup.
+        */
+
         onClose();
       }
     };
 
 
     /*
-      Add keyboard event listener.
+    ========================================================
+    ADD KEYBOARD EVENT LISTENER
+    ========================================================
+
+    We attach the listener to window so that
+    Escape works regardless of where the user
+    currently has focus.
     */
 
     window.addEventListener(
@@ -45,35 +76,59 @@ const Popup = ({ isOpen, onClose }) => {
 
     /*
     ========================================================
-    PREVENT BACKGROUND SCROLL
+    POPUP OPEN LOGIC
     ========================================================
-
-    If popup is open:
-
-    overflow: hidden
-
-    prevents the website behind the popup
-    from scrolling.
     */
 
     if (isOpen) {
+
+      /*
+      ------------------------------------------------------
+      PREVENT BACKGROUND SCROLL
+      ------------------------------------------------------
+
+      While popup is open:
+
+      overflow = hidden
+
+      This prevents the page behind the popup
+      from scrolling.
+      */
+
       document.body.style.overflow = "hidden";
+
+
+      /*
+      ------------------------------------------------------
+      MOVE FOCUS TO CLOSE BUTTON
+      ------------------------------------------------------
+
+      requestAnimationFrame waits until the browser
+      has rendered the popup before trying to focus
+      the button.
+
+      This is important because the popup may not
+      exist in the DOM yet when the effect starts.
+      */
+
+      requestAnimationFrame(() => {
+
+        closeButtonRef.current?.focus();
+
+      });
     }
 
 
     /*
     ========================================================
-    CLEANUP FUNCTION
+    CLEANUP
     ========================================================
 
     This runs when:
 
     - popup closes
     - component is removed
-    - dependencies change
-
-    We remove the event listener
-    and restore normal scrolling.
+    - effect runs again
     */
 
     return () => {
@@ -89,7 +144,7 @@ const Popup = ({ isOpen, onClose }) => {
 
 
       /*
-        Restore normal body scrolling.
+        Restore normal page scrolling.
       */
 
       document.body.style.overflow = "";
@@ -106,6 +161,15 @@ const Popup = ({ isOpen, onClose }) => {
 
       <div
         onClick={onClose}
+
+        /*
+          role="presentation"
+
+          The overlay itself is only a visual
+          background layer.
+        */
+
+        role="presentation"
 
         className={`
           fixed
@@ -138,7 +202,29 @@ const Popup = ({ isOpen, onClose }) => {
         <div
 
           /*
-            Prevent clicks inside the popup
+          ==================================================
+          ACCESSIBILITY
+          ==================================================
+
+          role="dialog"
+
+          Tells screen readers that this element
+          is a dialog/modal.
+
+          aria-modal="true"
+
+          Tells assistive technologies that
+          the rest of the page is temporarily
+          unavailable while the modal is open.
+          */
+
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="popup-title"
+          aria-describedby="popup-description"
+
+          /*
+            Prevent clicking inside the popup
             from closing the popup.
           */
 
@@ -177,6 +263,16 @@ const Popup = ({ isOpen, onClose }) => {
               ================================================== */}
 
           <button
+
+            /*
+              Connect our ref to the button.
+
+              This allows JavaScript to access
+              this specific DOM element.
+            */
+
+            ref={closeButtonRef}
+
             onClick={onClose}
 
             className="
@@ -214,6 +310,11 @@ const Popup = ({ isOpen, onClose }) => {
               focus:ring-gray-400
             "
 
+            /*
+              Screen readers will understand
+              exactly what this button does.
+            */
+
             aria-label="Close popup"
           >
             ✕
@@ -243,7 +344,9 @@ const Popup = ({ isOpen, onClose }) => {
 
           <div className="px-6 py-8 text-center">
 
-            {/* Badge */}
+            {/* ==================================================
+                BADGE
+                ================================================== */}
 
             <span
               className="
@@ -268,9 +371,13 @@ const Popup = ({ isOpen, onClose }) => {
             </span>
 
 
-            {/* Heading */}
+            {/* ==================================================
+                HEADING
+                ================================================== */}
 
             <h2
+              id="popup-title"
+
               className="
                 mt-4
 
@@ -285,9 +392,13 @@ const Popup = ({ isOpen, onClose }) => {
             </h2>
 
 
-            {/* Description */}
+            {/* ==================================================
+                DESCRIPTION
+                ================================================== */}
 
             <p
+              id="popup-description"
+
               className="
                 mx-auto
                 mt-3
