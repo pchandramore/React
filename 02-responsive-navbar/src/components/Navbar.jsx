@@ -1,9 +1,5 @@
-import { useState } from "react";
-import {
-  Menu,
-  X,
-  ChevronDown,
-} from "lucide-react";
+import React, { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
 
@@ -12,8 +8,17 @@ const Navbar = () => {
   MOBILE MENU STATE
   ========================================================
 
-  false → mobile menu closed
-  true  → mobile menu open
+  isMenuOpen
+  → stores whether the mobile menu is open.
+
+  false
+  → menu is closed
+
+  true
+  → menu is open
+
+  setIsMenuOpen()
+  → changes the state.
   */
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,19 +26,21 @@ const Navbar = () => {
 
   /*
   ========================================================
-  SHOP DROPDOWN STATE
+  TOGGLE MOBILE MENU
   ========================================================
 
-  false → Shop dropdown closed
-  true  → Shop dropdown open
+  If the menu is closed:
+  false → true
 
-  This is separate from isMenuOpen.
+  If the menu is open:
+  true → false
 
-  isMenuOpen  → controls the entire mobile menu
-  isShopOpen  → controls only the Shop dropdown
+  The ! operator reverses the current value.
   */
 
-  const [isShopOpen, setIsShopOpen] = useState(false);
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
 
   return (
@@ -59,20 +66,38 @@ const Navbar = () => {
             LOGO
             ================================================== */}
 
-        <div
+        <a
+          href="/"
           className="
             text-2xl
             font-bold
+            tracking-tight
             text-gray-900
           "
         >
           MyBrand
-        </div>
+        </a>
 
 
         {/* ==================================================
             DESKTOP NAVIGATION
-            ================================================== */}
+            ==================================================
+
+            hidden
+            → hidden by default
+
+            md:flex
+            → becomes flex from medium screens
+              and above.
+
+            Therefore:
+
+            Mobile:
+            navigation hidden
+
+            Desktop:
+            navigation visible
+        */}
 
         <div
           className="
@@ -83,11 +108,11 @@ const Navbar = () => {
           "
         >
 
-          {/* HOME */}
-
           <a
             href="#"
             className="
+              text-sm
+              font-medium
               text-gray-700
               transition
               hover:text-black
@@ -96,167 +121,11 @@ const Navbar = () => {
             Home
           </a>
 
-
-          {/* ==================================================
-              SHOP DROPDOWN
-              ================================================== */}
-
-          <div className="relative">
-
-            {/* SHOP BUTTON */}
-
-            <button
-              type="button"
-
-              onClick={() => {
-                setIsShopOpen(!isShopOpen);
-              }}
-
-              className="
-                flex
-                items-center
-                gap-1
-
-                text-gray-700
-
-                transition
-                hover:text-black
-
-                focus:outline-none
-              "
-            >
-
-              Shop
-
-              <ChevronDown
-                size={18}
-
-                className={`
-                  transition-transform
-                  duration-200
-
-                  ${
-                    isShopOpen
-                      ? "rotate-180"
-                      : ""
-                  }
-                `}
-              />
-
-            </button>
-
-
-            {/* ==================================================
-                DESKTOP DROPDOWN
-                ================================================== */}
-
-            {isShopOpen && (
-
-              <div
-                className="
-                  absolute
-                  left-0
-                  top-full
-                  z-50
-                  mt-3
-                  w-56
-
-                  rounded-xl
-                  border
-                  bg-white
-                  p-2
-
-                  shadow-xl
-                "
-              >
-
-                <a
-                  href="#"
-                  className="
-                    block
-                    rounded-lg
-                    px-4
-                    py-3
-                    text-gray-700
-
-                    transition
-
-                    hover:bg-gray-100
-                    hover:text-black
-                  "
-                >
-                  Jewellery
-                </a>
-
-
-                <a
-                  href="#"
-                  className="
-                    block
-                    rounded-lg
-                    px-4
-                    py-3
-                    text-gray-700
-
-                    transition
-
-                    hover:bg-gray-100
-                    hover:text-black
-                  "
-                >
-                  Rings
-                </a>
-
-
-                <a
-                  href="#"
-                  className="
-                    block
-                    rounded-lg
-                    px-4
-                    py-3
-                    text-gray-700
-
-                    transition
-
-                    hover:bg-gray-100
-                    hover:text-black
-                  "
-                >
-                  Necklaces
-                </a>
-
-
-                <a
-                  href="#"
-                  className="
-                    block
-                    rounded-lg
-                    px-4
-                    py-3
-                    text-gray-700
-
-                    transition
-
-                    hover:bg-gray-100
-                    hover:text-black
-                  "
-                >
-                  Bracelets
-                </a>
-
-              </div>
-
-            )}
-
-          </div>
-
-
-          {/* ABOUT */}
-
           <a
             href="#"
             className="
+              text-sm
+              font-medium
               text-gray-700
               transition
               hover:text-black
@@ -265,12 +134,24 @@ const Navbar = () => {
             About
           </a>
 
-
-          {/* CONTACT */}
+          <a
+            href="#"
+            className="
+              text-sm
+              font-medium
+              text-gray-700
+              transition
+              hover:text-black
+            "
+          >
+            Services
+          </a>
 
           <a
             href="#"
             className="
+              text-sm
+              font-medium
               text-gray-700
               transition
               hover:text-black
@@ -284,14 +165,22 @@ const Navbar = () => {
 
         {/* ==================================================
             MOBILE MENU BUTTON
-            ================================================== */}
+            ==================================================
+
+            md:hidden
+            → button disappears on desktop.
+
+            Therefore:
+
+            Mobile:
+            hamburger visible
+
+            Desktop:
+            hamburger hidden
+        */}
 
         <button
-          type="button"
-
-          onClick={() => {
-            setIsMenuOpen(!isMenuOpen);
-          }}
+          onClick={toggleMenu}
 
           className="
             rounded-lg
@@ -301,6 +190,7 @@ const Navbar = () => {
             transition
 
             hover:bg-gray-100
+            hover:text-black
 
             focus:outline-none
             focus:ring-2
@@ -311,15 +201,17 @@ const Navbar = () => {
 
           aria-label={
             isMenuOpen
-              ? "Close menu"
-              : "Open menu"
+              ? "Close navigation menu"
+              : "Open navigation menu"
           }
+
+          aria-expanded={isMenuOpen}
         >
 
           {isMenuOpen ? (
-            <X size={28} />
+            <X size={24} />
           ) : (
-            <Menu size={28} />
+            <Menu size={24} />
           )}
 
         </button>
@@ -329,7 +221,22 @@ const Navbar = () => {
 
       {/* ==================================================
           MOBILE NAVIGATION
-          ================================================== */}
+          ==================================================
+
+          We only display this when:
+
+          isMenuOpen === true
+
+          The && operator means:
+
+          condition && JSX
+
+          If condition is true:
+          render JSX
+
+          If condition is false:
+          render nothing.
+      */}
 
       {isMenuOpen && (
 
@@ -337,228 +244,101 @@ const Navbar = () => {
           className="
             border-t
             bg-white
-            px-6
-            py-6
-
             md:hidden
           "
         >
 
-          <div className="flex flex-col gap-5">
+          <div
+            className="
+              mx-auto
+              max-w-7xl
+              px-6
+              py-4
+            "
+          >
 
-            {/* HOME */}
+            <nav className="flex flex-col">
 
-            <a
-              href="#"
-
-              onClick={() => {
-                setIsMenuOpen(false);
-              }}
-
-              className="
-                text-lg
-                font-medium
-                text-gray-700
-
-                transition
-
-                hover:text-black
-              "
-            >
-              Home
-            </a>
-
-
-            {/* ==================================================
-                MOBILE SHOP DROPDOWN
-                ================================================== */}
-
-            <div>
-
-              {/* SHOP BUTTON */}
-
-              <button
-                type="button"
-
-                onClick={() => {
-                  setIsShopOpen(!isShopOpen);
-                }}
-
+              <a
+                href="#"
                 className="
-                  flex
-                  w-full
-                  items-center
-                  justify-between
-
-                  text-lg
+                  rounded-lg
+                  px-4
+                  py-3
+                  text-sm
                   font-medium
                   text-gray-700
 
                   transition
 
+                  hover:bg-gray-100
                   hover:text-black
                 "
               >
-
-                <span>
-                  Shop
-                </span>
+                Home
+              </a>
 
 
-                <ChevronDown
-                  size={20}
+              <a
+                href="#"
+                className="
+                  rounded-lg
+                  px-4
+                  py-3
+                  text-sm
+                  font-medium
+                  text-gray-700
 
-                  className={`
-                    transition-transform
-                    duration-200
+                  transition
 
-                    ${
-                      isShopOpen
-                        ? "rotate-180"
-                        : ""
-                    }
-                  `}
-                />
-
-              </button>
-
-
-              {/* ==================================================
-                  MOBILE SHOP ITEMS
-                  ================================================== */}
-
-              {isShopOpen && (
-
-                <div
-                  className="
-                    mt-3
-                    flex
-                    flex-col
-                    gap-3
-                    border-l-2
-                    border-gray-200
-                    pl-4
-                  "
-                >
-
-                  <a
-                    href="#"
-
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsShopOpen(false);
-                    }}
-
-                    className="
-                      text-gray-600
-                      hover:text-black
-                    "
-                  >
-                    Jewellery
-                  </a>
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+                About
+              </a>
 
 
-                  <a
-                    href="#"
+              <a
+                href="#"
+                className="
+                  rounded-lg
+                  px-4
+                  py-3
+                  text-sm
+                  font-medium
+                  text-gray-700
 
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsShopOpen(false);
-                    }}
+                  transition
 
-                    className="
-                      text-gray-600
-                      hover:text-black
-                    "
-                  >
-                    Rings
-                  </a>
-
-
-                  <a
-                    href="#"
-
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsShopOpen(false);
-                    }}
-
-                    className="
-                      text-gray-600
-                      hover:text-black
-                    "
-                  >
-                    Necklaces
-                  </a>
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+                Services
+              </a>
 
 
-                  <a
-                    href="#"
+              <a
+                href="#"
+                className="
+                  rounded-lg
+                  px-4
+                  py-3
+                  text-sm
+                  font-medium
+                  text-gray-700
 
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsShopOpen(false);
-                    }}
+                  transition
 
-                    className="
-                      text-gray-600
-                      hover:text-black
-                    "
-                  >
-                    Bracelets
-                  </a>
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+                Contact
+              </a>
 
-                </div>
-
-              )}
-
-            </div>
-
-
-            {/* ABOUT */}
-
-            <a
-              href="#"
-
-              onClick={() => {
-                setIsMenuOpen(false);
-              }}
-
-              className="
-                text-lg
-                font-medium
-                text-gray-700
-
-                transition
-
-                hover:text-black
-              "
-            >
-              About
-            </a>
-
-
-            {/* CONTACT */}
-
-            <a
-              href="#"
-
-              onClick={() => {
-                setIsMenuOpen(false);
-              }}
-
-              className="
-                text-lg
-                font-medium
-                text-gray-700
-
-                transition
-
-                hover:text-black
-              "
-            >
-              Contact
-            </a>
+            </nav>
 
           </div>
 
