@@ -9,6 +9,10 @@ import {
   Menu,
   X,
   ChevronDown,
+  Search,
+  User,
+  Heart,
+  ShoppingBag,
 } from "lucide-react";
 
 
@@ -65,15 +69,30 @@ const Navbar = () => {
 
   /*
   ========================================================
-  COLLECTIONS MENU STATE
+  DESKTOP COLLECTIONS MENU STATE
   ========================================================
 
-  false = collections menu closed
-  true  = collections menu open
+  false = desktop collections menu closed
+  true  = desktop collections menu open
   */
 
   const [isCollectionsOpen, setIsCollectionsOpen] =
     useState(false);
+
+
+  /*
+  ========================================================
+  MOBILE COLLECTIONS MENU STATE
+  ========================================================
+
+  false = mobile collections menu closed
+  true  = mobile collections menu open
+  */
+
+  const [
+    isMobileCollectionsOpen,
+    setIsMobileCollectionsOpen,
+  ] = useState(false);
 
 
   /*
@@ -89,6 +108,10 @@ const Navbar = () => {
   ========================================================
   CLOSE DESKTOP COLLECTIONS WHEN CLICKING OUTSIDE
   ========================================================
+
+  This only controls the DESKTOP collections menu.
+
+  The mobile menu has its own separate state.
   */
 
   useEffect(() => {
@@ -101,7 +124,9 @@ const Navbar = () => {
           event.target
         )
       ) {
+
         setIsCollectionsOpen(false);
+
       }
 
     };
@@ -140,13 +165,26 @@ const Navbar = () => {
 
   /*
   ========================================================
-  TOGGLE COLLECTIONS MENU
+  TOGGLE DESKTOP COLLECTIONS
   ========================================================
   */
 
   const toggleCollections = () => {
 
     setIsCollectionsOpen((prev) => !prev);
+
+  };
+
+
+  /*
+  ========================================================
+  TOGGLE MOBILE COLLECTIONS
+  ========================================================
+  */
+
+  const toggleMobileCollections = () => {
+
+    setIsMobileCollectionsOpen((prev) => !prev);
 
   };
 
@@ -419,6 +457,145 @@ const Navbar = () => {
             Contact
           </a>
 
+
+          {/* ==================================================
+              DESKTOP UTILITY ICONS
+              ================================================== */}
+
+          <div
+            className="
+              ml-2
+
+              flex
+              items-center
+              gap-2
+
+              border-l
+              pl-6
+            "
+          >
+
+            {/* SEARCH */}
+
+            <button
+              type="button"
+
+              aria-label="Search"
+
+              className="
+                rounded-full
+
+                p-2
+
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+
+                focus:outline-none
+                focus:ring-2
+                focus:ring-gray-300
+              "
+            >
+
+              <Search size={19} />
+
+            </button>
+
+
+            {/* ACCOUNT */}
+
+            <button
+              type="button"
+
+              aria-label="Account"
+
+              className="
+                rounded-full
+
+                p-2
+
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+
+                focus:outline-none
+                focus:ring-2
+                focus:ring-gray-300
+              "
+            >
+
+              <User size={19} />
+
+            </button>
+
+
+            {/* WISHLIST */}
+
+            <button
+              type="button"
+
+              aria-label="Wishlist"
+
+              className="
+                rounded-full
+
+                p-2
+
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+
+                focus:outline-none
+                focus:ring-2
+                focus:ring-gray-300
+              "
+            >
+
+              <Heart size={19} />
+
+            </button>
+
+
+            {/* CART */}
+
+            <button
+              type="button"
+
+              aria-label="Shopping cart"
+
+              className="
+                rounded-full
+
+                p-2
+
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+
+                focus:outline-none
+                focus:ring-2
+                focus:ring-gray-300
+              "
+            >
+
+              <ShoppingBag size={19} />
+
+            </button>
+
+          </div>
+
         </div>
 
 
@@ -481,7 +658,7 @@ const Navbar = () => {
       <div
         className={
           isMenuOpen
-            ? "max-h-[700px] overflow-hidden border-t bg-white opacity-100 transition-all duration-300 ease-in-out md:hidden"
+            ? "max-h-[900px] overflow-hidden border-t bg-white opacity-100 transition-all duration-300 ease-in-out md:hidden"
             : "max-h-0 overflow-hidden border-t bg-white opacity-0 transition-all duration-300 ease-in-out md:hidden"
         }
       >
@@ -531,7 +708,7 @@ const Navbar = () => {
 
 
             {/* ==================================================
-                COLLECTIONS
+                MOBILE COLLECTIONS
                 ================================================== */}
 
             <div className="w-full">
@@ -544,7 +721,7 @@ const Navbar = () => {
               <button
                 type="button"
 
-                onClick={toggleCollections}
+                onClick={toggleMobileCollections}
 
                 className="
                   flex
@@ -579,7 +756,7 @@ const Navbar = () => {
                   size={18}
 
                   className={
-                    isCollectionsOpen
+                    isMobileCollectionsOpen
                       ? "rotate-180 transition-transform duration-200"
                       : "rotate-0 transition-transform duration-200"
                   }
@@ -589,12 +766,12 @@ const Navbar = () => {
 
 
               {/* ==================================================
-                  COLLECTIONS SUBMENU
+                  MOBILE COLLECTIONS SUBMENU
                   ================================================== */}
 
               <div
                 className={
-                  isCollectionsOpen
+                  isMobileCollectionsOpen
                     ? "max-h-[500px] overflow-hidden opacity-100 transition-all duration-300"
                     : "max-h-0 overflow-hidden opacity-0 transition-all duration-300"
                 }
@@ -603,7 +780,9 @@ const Navbar = () => {
                 <div
                   className="
                     ml-4
+
                     border-l
+
                     pl-4
                   "
                 >
@@ -633,9 +812,7 @@ const Navbar = () => {
                       "
                     >
 
-                      {/* ==================================================
-                          MOBILE COLLECTION IMAGE
-                          ================================================== */}
+                      {/* IMAGE */}
 
                       <img
                         src={collection.image}
@@ -655,9 +832,7 @@ const Navbar = () => {
                       />
 
 
-                      {/* ==================================================
-                          MOBILE COLLECTION CONTENT
-                          ================================================== */}
+                      {/* CONTENT */}
 
                       <div>
 
@@ -758,6 +933,177 @@ const Navbar = () => {
             >
               Contact
             </a>
+
+
+            {/* ==================================================
+                MOBILE UTILITY MENU
+                ================================================== */}
+
+            <div
+              className="
+                mt-2
+                border-t
+                pt-2
+              "
+            >
+
+
+              {/* ==================================================
+                  SEARCH
+                  ================================================== */}
+
+              <button
+                type="button"
+
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+
+                  rounded-lg
+
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <Search size={19} />
+
+                <span>
+                  Search
+                </span>
+
+              </button>
+
+
+              {/* ==================================================
+                  ACCOUNT
+                  ================================================== */}
+
+              <button
+                type="button"
+
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+
+                  rounded-lg
+
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <User size={19} />
+
+                <span>
+                  Account
+                </span>
+
+              </button>
+
+
+              {/* ==================================================
+                  WISHLIST
+                  ================================================== */}
+
+              <button
+                type="button"
+
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+
+                  rounded-lg
+
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <Heart size={19} />
+
+                <span>
+                  Wishlist
+                </span>
+
+              </button>
+
+
+              {/* ==================================================
+                  CART
+                  ================================================== */}
+
+              <button
+                type="button"
+
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+
+                  rounded-lg
+
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <ShoppingBag size={19} />
+
+                <span>
+                  Cart
+                </span>
+
+              </button>
+
+            </div>
 
           </nav>
 
