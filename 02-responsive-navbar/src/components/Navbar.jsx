@@ -95,9 +95,6 @@ const Navbar = () => {
   ========================================================
   MOBILE MENU STATE
   ========================================================
-
-  false = mobile menu closed
-  true  = mobile menu open
   */
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -107,9 +104,6 @@ const Navbar = () => {
   ========================================================
   DESKTOP COLLECTIONS MENU STATE
   ========================================================
-
-  false = desktop collections menu closed
-  true  = desktop collections menu open
   */
 
   const [isCollectionsOpen, setIsCollectionsOpen] =
@@ -120,9 +114,6 @@ const Navbar = () => {
   ========================================================
   MOBILE COLLECTIONS MENU STATE
   ========================================================
-
-  false = mobile collections menu closed
-  true  = mobile collections menu open
   */
 
   const [
@@ -135,15 +126,6 @@ const Navbar = () => {
   ========================================================
   SEARCH STATE
   ========================================================
-
-  isSearchOpen
-  ----------------
-  Controls whether the search area is visible.
-
-
-  searchQuery
-  ----------------
-  Stores what the user types into the search box.
   */
 
   const [isSearchOpen, setIsSearchOpen] =
@@ -151,6 +133,16 @@ const Navbar = () => {
 
   const [searchQuery, setSearchQuery] =
     useState("");
+
+
+  /*
+  ========================================================
+  ACCOUNT STATE
+  ========================================================
+  */
+
+  const [isAccountOpen, setIsAccountOpen] =
+    useState(false);
 
 
   /*
@@ -164,13 +156,33 @@ const Navbar = () => {
 
   /*
   ========================================================
-  CLOSE DESKTOP COLLECTIONS WHEN CLICKING OUTSIDE
+  ACCOUNT REF
   ========================================================
+  */
+
+  const accountRef = useRef(null);
+
+
+  /*
+  ========================================================
+  CLICK OUTSIDE HANDLER
+  ========================================================
+
+  Closes:
+
+  - Collections
+  - Account
+
+  when the user clicks outside those areas.
   */
 
   useEffect(() => {
 
     const handleClickOutside = (event) => {
+
+      /*
+      Close Collections
+      */
 
       if (
         desktopCollectionsRef.current &&
@@ -180,6 +192,22 @@ const Navbar = () => {
       ) {
 
         setIsCollectionsOpen(false);
+
+      }
+
+
+      /*
+      Close Account
+      */
+
+      if (
+        accountRef.current &&
+        !accountRef.current.contains(
+          event.target
+        )
+      ) {
+
+        setIsAccountOpen(false);
 
       }
 
@@ -208,21 +236,6 @@ const Navbar = () => {
   ========================================================
   FILTER PRODUCTS
   ========================================================
-
-  We search both:
-
-  1. Product name
-  2. Product category
-
-  Example:
-
-  "gold"
-
-  can match:
-
-  Classic Gold Necklace
-  Bridal Gold Set
-  Gold Hoop Earrings
   */
 
   const filteredProducts = products.filter(
@@ -271,6 +284,12 @@ const Navbar = () => {
 
     setIsCollectionsOpen((prev) => !prev);
 
+    /*
+    Close Account
+    */
+
+    setIsAccountOpen(false);
+
   };
 
 
@@ -286,6 +305,12 @@ const Navbar = () => {
       (prev) => !prev
     );
 
+    /*
+    Close Account
+    */
+
+    setIsAccountOpen(false);
+
   };
 
 
@@ -298,6 +323,12 @@ const Navbar = () => {
   const toggleSearch = () => {
 
     setIsSearchOpen((prev) => !prev);
+
+    /*
+    Close Account
+    */
+
+    setIsAccountOpen(false);
 
   };
 
@@ -313,6 +344,27 @@ const Navbar = () => {
     setIsSearchOpen(false);
 
     setSearchQuery("");
+
+  };
+
+
+  /*
+  ========================================================
+  TOGGLE ACCOUNT
+  ========================================================
+  */
+
+  const toggleAccount = () => {
+
+    setIsAccountOpen((prev) => !prev);
+
+    /*
+    Close other dropdowns
+    */
+
+    setIsCollectionsOpen(false);
+
+    setIsMobileCollectionsOpen(false);
 
   };
 
@@ -371,9 +423,7 @@ const Navbar = () => {
         >
 
 
-          {/* ==================================================
-              HOME
-              ================================================== */}
+          {/* HOME */}
 
           <a
             href="#"
@@ -382,9 +432,7 @@ const Navbar = () => {
               text-sm
               font-medium
               text-gray-700
-
               transition
-
               hover:text-black
             "
           >
@@ -401,9 +449,6 @@ const Navbar = () => {
             className="relative"
           >
 
-
-            {/* COLLECTIONS BUTTON */}
-
             <button
               type="button"
 
@@ -413,21 +458,16 @@ const Navbar = () => {
                 flex
                 items-center
                 gap-1
-
                 text-sm
                 font-medium
                 text-gray-700
-
                 transition
-
                 hover:text-black
-
                 focus:outline-none
               "
             >
 
               Collections
-
 
               <ChevronDown
                 size={16}
@@ -442,9 +482,7 @@ const Navbar = () => {
             </button>
 
 
-            {/* ==================================================
-                DESKTOP MEGA MENU
-                ================================================== */}
+            {/* DESKTOP MEGA MENU */}
 
             <div
               className={
@@ -467,43 +505,29 @@ const Navbar = () => {
                       group
                       flex
                       gap-4
-
                       rounded-xl
-
                       p-3
-
                       transition
-
                       hover:bg-gray-100
                     "
                   >
 
-                    {/* IMAGE */}
-
                     <img
                       src={collection.image}
-
                       alt={collection.title}
 
                       className="
                         h-20
                         w-20
-
                         shrink-0
-
                         rounded-lg
-
                         object-cover
-
                         transition
                         duration-300
-
                         group-hover:scale-105
                       "
                     />
 
-
-                    {/* CONTENT */}
 
                     <div>
 
@@ -521,10 +545,8 @@ const Navbar = () => {
                       <p
                         className="
                           mt-1
-
                           text-xs
                           leading-5
-
                           text-gray-500
                         "
                       >
@@ -544,9 +566,7 @@ const Navbar = () => {
           </div>
 
 
-          {/* ==================================================
-              ABOUT
-              ================================================== */}
+          {/* ABOUT */}
 
           <a
             href="#"
@@ -555,9 +575,7 @@ const Navbar = () => {
               text-sm
               font-medium
               text-gray-700
-
               transition
-
               hover:text-black
             "
           >
@@ -565,9 +583,7 @@ const Navbar = () => {
           </a>
 
 
-          {/* ==================================================
-              CONTACT
-              ================================================== */}
+          {/* CONTACT */}
 
           <a
             href="#"
@@ -576,9 +592,7 @@ const Navbar = () => {
               text-sm
               font-medium
               text-gray-700
-
               transition
-
               hover:text-black
             "
           >
@@ -593,11 +607,9 @@ const Navbar = () => {
           <div
             className="
               ml-2
-
               flex
               items-center
               gap-2
-
               border-l
               pl-6
             "
@@ -615,16 +627,11 @@ const Navbar = () => {
 
               className="
                 rounded-full
-
                 p-2
-
                 text-gray-700
-
                 transition
-
                 hover:bg-gray-100
                 hover:text-black
-
                 focus:outline-none
                 focus:ring-2
                 focus:ring-gray-300
@@ -638,32 +645,123 @@ const Navbar = () => {
 
             {/* ACCOUNT */}
 
-            <button
-              type="button"
-
-              aria-label="Account"
-
-              className="
-                rounded-full
-
-                p-2
-
-                text-gray-700
-
-                transition
-
-                hover:bg-gray-100
-                hover:text-black
-
-                focus:outline-none
-                focus:ring-2
-                focus:ring-gray-300
-              "
+            <div
+              ref={accountRef}
+              className="relative"
             >
 
-              <User size={19} />
+              <button
+                type="button"
 
-            </button>
+                onClick={toggleAccount}
+
+                aria-label="Account"
+
+                aria-expanded={isAccountOpen}
+
+                className="
+                  rounded-full
+                  p-2
+                  text-gray-700
+                  transition
+                  hover:bg-gray-100
+                  hover:text-black
+                  focus:outline-none
+                  focus:ring-2
+                  focus:ring-gray-300
+                "
+              >
+
+                <User size={19} />
+
+              </button>
+
+
+              {/* ACCOUNT DROPDOWN */}
+
+              {isAccountOpen && (
+
+                <div
+                  className="
+                    absolute
+                    right-0
+                    top-full
+                    z-50
+                    mt-3
+                    w-64
+                    rounded-xl
+                    border
+                    bg-white
+                    p-5
+                    shadow-xl
+                  "
+                >
+
+                  <h3
+                    className="
+                      text-base
+                      font-semibold
+                      text-gray-900
+                    "
+                  >
+                    Welcome
+                  </h3>
+
+
+                  <p
+                    className="
+                      mt-1
+                      text-sm
+                      leading-5
+                      text-gray-500
+                    "
+                  >
+                    Sign in to your account to view
+                    your orders and profile.
+                  </p>
+
+
+                  <button
+                    type="button"
+
+                    className="
+                      mt-4
+                      w-full
+                      rounded-lg
+                      bg-black
+                      px-4
+                      py-2.5
+                      text-sm
+                      font-medium
+                      text-white
+                      transition
+                      hover:bg-gray-800
+                    "
+                  >
+                    Sign In
+                  </button>
+
+
+                  <button
+                    type="button"
+
+                    className="
+                      mt-3
+                      w-full
+                      text-sm
+                      font-medium
+                      text-gray-700
+                      hover:text-black
+                    "
+                  >
+                    Create an account
+                  </button>
+
+                </div>
+
+              )}
+
+            </div>
 
 
             {/* WISHLIST */}
@@ -675,16 +773,11 @@ const Navbar = () => {
 
               className="
                 rounded-full
-
                 p-2
-
                 text-gray-700
-
                 transition
-
                 hover:bg-gray-100
                 hover:text-black
-
                 focus:outline-none
                 focus:ring-2
                 focus:ring-gray-300
@@ -705,16 +798,11 @@ const Navbar = () => {
 
               className="
                 rounded-full
-
                 p-2
-
                 text-gray-700
-
                 transition
-
                 hover:bg-gray-100
                 hover:text-black
-
                 focus:outline-none
                 focus:ring-2
                 focus:ring-gray-300
@@ -741,20 +829,14 @@ const Navbar = () => {
 
           className="
             rounded-lg
-
             p-2
-
             text-gray-700
-
             transition
-
             hover:bg-gray-100
             hover:text-black
-
             focus:outline-none
             focus:ring-2
             focus:ring-gray-400
-
             md:hidden
           "
 
@@ -768,13 +850,9 @@ const Navbar = () => {
         >
 
           {isMenuOpen ? (
-
             <X size={24} />
-
           ) : (
-
             <Menu size={24} />
-
           )}
 
         </button>
@@ -789,11 +867,8 @@ const Navbar = () => {
       <div
         className={`
           overflow-hidden
-
           border-t
-
           bg-white
-
           transition-all
           duration-300
 
@@ -805,39 +880,23 @@ const Navbar = () => {
         `}
       >
 
-        {/* ==================================================
-            SEARCH INPUT ROW
-            ================================================== */}
-
         <div
           className="
             mx-auto
-
             flex
             max-w-7xl
             items-center
             gap-3
-
             px-6
             py-4
           "
         >
 
-
-          {/* SEARCH ICON */}
-
           <Search
             size={20}
-
-            className="
-              shrink-0
-
-              text-gray-500
-            "
+            className="shrink-0 text-gray-500"
           />
 
-
-          {/* SEARCH INPUT */}
 
           <input
             type="text"
@@ -852,22 +911,15 @@ const Navbar = () => {
 
             className="
               w-full
-
               border-none
-
               bg-transparent
-
               text-sm
               text-gray-900
-
               outline-none
-
               placeholder:text-gray-400
             "
           />
 
-
-          {/* CLOSE SEARCH */}
 
           <button
             type="button"
@@ -878,16 +930,11 @@ const Navbar = () => {
 
             className="
               rounded-full
-
               p-2
-
               text-gray-500
-
               transition
-
               hover:bg-gray-100
               hover:text-black
-
               focus:outline-none
             "
           >
@@ -908,11 +955,8 @@ const Navbar = () => {
           <div
             className="
               mx-auto
-
               max-w-7xl
-
               px-6
-
               pb-4
             "
           >
@@ -922,9 +966,7 @@ const Navbar = () => {
               <div
                 className="
                   grid
-
                   gap-3
-
                   sm:grid-cols-2
                 "
               >
@@ -938,44 +980,29 @@ const Navbar = () => {
 
                     className="
                       flex
-
                       items-center
-
                       gap-3
-
                       rounded-lg
-
                       border
-
                       p-3
-
                       transition
-
                       hover:bg-gray-50
                     "
                   >
 
-                    {/* PRODUCT IMAGE */}
-
                     <img
                       src={product.image}
-
                       alt={product.name}
 
                       className="
                         h-14
                         w-14
-
                         shrink-0
-
                         rounded-lg
-
                         object-cover
                       "
                     />
 
-
-                    {/* PRODUCT INFORMATION */}
 
                     <div>
 
@@ -1012,9 +1039,7 @@ const Navbar = () => {
               <p
                 className="
                   py-2
-
                   text-sm
-
                   text-gray-500
                 "
               >
@@ -1045,9 +1070,7 @@ const Navbar = () => {
         <div
           className="
             mx-auto
-
             max-w-7xl
-
             px-6
             py-4
           "
@@ -1056,9 +1079,7 @@ const Navbar = () => {
           <nav className="flex flex-col">
 
 
-            {/* ==================================================
-                HOME
-                ================================================== */}
+            {/* HOME */}
 
             <a
               href="#"
@@ -1067,19 +1088,13 @@ const Navbar = () => {
                 flex
                 w-full
                 items-center
-
                 rounded-lg
-
                 px-4
                 py-3
-
                 text-sm
                 font-medium
-
                 text-gray-700
-
                 transition
-
                 hover:bg-gray-100
                 hover:text-black
               "
@@ -1094,9 +1109,6 @@ const Navbar = () => {
 
             <div className="w-full">
 
-
-              {/* COLLECTIONS BUTTON */}
-
               <button
                 type="button"
 
@@ -1105,22 +1117,15 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
-
                   items-center
                   justify-between
-
                   rounded-lg
-
                   px-4
                   py-3
-
                   text-sm
                   font-medium
-
                   text-gray-700
-
                   transition
-
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1144,9 +1149,7 @@ const Navbar = () => {
               </button>
 
 
-              {/* ==================================================
-                  MOBILE COLLECTIONS SUBMENU
-                  ================================================== */}
+              {/* MOBILE COLLECTIONS SUBMENU */}
 
               <div
                 className={
@@ -1159,9 +1162,7 @@ const Navbar = () => {
                 <div
                   className="
                     ml-4
-
                     border-l
-
                     pl-4
                   "
                 >
@@ -1175,43 +1176,29 @@ const Navbar = () => {
 
                       className="
                         group
-
                         flex
                         items-center
-
                         gap-3
-
                         rounded-lg
-
                         p-2
-
                         transition
-
                         hover:bg-gray-100
                       "
                     >
 
-                      {/* IMAGE */}
-
                       <img
                         src={collection.image}
-
                         alt={collection.title}
 
                         className="
                           h-12
                           w-12
-
                           shrink-0
-
                           rounded-lg
-
                           object-cover
                         "
                       />
 
-
-                      {/* CONTENT */}
 
                       <div>
 
@@ -1219,7 +1206,6 @@ const Navbar = () => {
                           className="
                             text-sm
                             font-medium
-
                             text-gray-800
                           "
                         >
@@ -1230,7 +1216,6 @@ const Navbar = () => {
                         <p
                           className="
                             text-xs
-
                             text-gray-500
                           "
                         >
@@ -1250,9 +1235,7 @@ const Navbar = () => {
             </div>
 
 
-            {/* ==================================================
-                ABOUT
-                ================================================== */}
+            {/* ABOUT */}
 
             <a
               href="#"
@@ -1261,19 +1244,13 @@ const Navbar = () => {
                 flex
                 w-full
                 items-center
-
                 rounded-lg
-
                 px-4
                 py-3
-
                 text-sm
                 font-medium
-
                 text-gray-700
-
                 transition
-
                 hover:bg-gray-100
                 hover:text-black
               "
@@ -1282,9 +1259,7 @@ const Navbar = () => {
             </a>
 
 
-            {/* ==================================================
-                CONTACT
-                ================================================== */}
+            {/* CONTACT */}
 
             <a
               href="#"
@@ -1293,19 +1268,13 @@ const Navbar = () => {
                 flex
                 w-full
                 items-center
-
                 rounded-lg
-
                 px-4
                 py-3
-
                 text-sm
                 font-medium
-
                 text-gray-700
-
                 transition
-
                 hover:bg-gray-100
                 hover:text-black
               "
@@ -1321,9 +1290,7 @@ const Navbar = () => {
             <div
               className="
                 mt-2
-
                 border-t
-
                 pt-2
               "
             >
@@ -1339,22 +1306,15 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
-
                   items-center
                   gap-3
-
                   rounded-lg
-
                   px-4
                   py-3
-
                   text-sm
                   font-medium
-
                   text-gray-700
-
                   transition
-
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1374,25 +1334,20 @@ const Navbar = () => {
               <button
                 type="button"
 
+                onClick={toggleAccount}
+
                 className="
                   flex
                   w-full
-
                   items-center
                   gap-3
-
                   rounded-lg
-
                   px-4
                   py-3
-
                   text-sm
                   font-medium
-
                   text-gray-700
-
                   transition
-
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1407,6 +1362,86 @@ const Navbar = () => {
               </button>
 
 
+              {/* MOBILE ACCOUNT PANEL */}
+
+              {isAccountOpen && (
+
+                <div
+                  className="
+                    mx-4
+                    mb-2
+                    rounded-lg
+                    border
+                    bg-gray-50
+                    p-4
+                  "
+                >
+
+                  <h3
+                    className="
+                      text-sm
+                      font-semibold
+                      text-gray-900
+                    "
+                  >
+                    Welcome
+                  </h3>
+
+
+                  <p
+                    className="
+                      mt-1
+                      text-xs
+                      leading-5
+                      text-gray-500
+                    "
+                  >
+                    Sign in to your account to view
+                    your orders and profile.
+                  </p>
+
+
+                  <button
+                    type="button"
+
+                    className="
+                      mt-3
+                      w-full
+                      rounded-lg
+                      bg-black
+                      px-4
+                      py-2
+                      text-sm
+                      font-medium
+                      text-white
+                      transition
+                      hover:bg-gray-800
+                    "
+                  >
+                    Sign In
+                  </button>
+
+
+                  <button
+                    type="button"
+
+                    className="
+                      mt-2
+                      w-full
+                      text-xs
+                      font-medium
+                      text-gray-700
+                      hover:text-black
+                    "
+                  >
+                    Create an account
+                  </button>
+
+                </div>
+
+              )}
+
+
               {/* WISHLIST */}
 
               <button
@@ -1415,22 +1450,15 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
-
                   items-center
                   gap-3
-
                   rounded-lg
-
                   px-4
                   py-3
-
                   text-sm
                   font-medium
-
                   text-gray-700
-
                   transition
-
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1453,22 +1481,15 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
-
                   items-center
                   gap-3
-
                   rounded-lg
-
                   px-4
                   py-3
-
                   text-sm
                   font-medium
-
                   text-gray-700
-
                   transition
-
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1496,3 +1517,4 @@ const Navbar = () => {
 
 
 export default Navbar;
+
