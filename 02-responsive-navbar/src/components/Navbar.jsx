@@ -9,6 +9,52 @@ const Navbar = () => {
 
   /*
   ========================================================
+  JEWELLERY COLLECTIONS DATA
+  ========================================================
+
+  We store our collection information in an array.
+
+  Instead of writing the same JSX repeatedly,
+  we can use:
+
+  collections.map(...)
+
+  This makes the navbar easier to maintain.
+  */
+
+  const collections = [
+    {
+      title: "Gold Jewellery",
+      description:
+        "Timeless gold jewellery for every occasion.",
+      image: "/jewellery/gold.jpg",
+    },
+
+    {
+      title: "Diamond Jewellery",
+      description:
+        "Elegant diamond pieces crafted to shine.",
+      image: "/jewellery/diamond.jpg",
+    },
+
+    {
+      title: "Bridal Jewellery",
+      description:
+        "Statement jewellery for your special day.",
+      image: "/jewellery/bridal.jpg",
+    },
+
+    {
+      title: "Earrings",
+      description:
+        "Elegant earrings for every occasion.",
+      image: "/jewellery/earrings.jpg",
+    },
+  ];
+
+
+  /*
+  ========================================================
   MOBILE MENU STATE
   ========================================================
 
@@ -21,16 +67,15 @@ const Navbar = () => {
 
   /*
   ========================================================
-  SERVICES DROPDOWN STATE
+  COLLECTIONS DROPDOWN STATE
   ========================================================
 
-  This controls the nested Services menu.
-
-  false → Services dropdown closed
-  true  → Services dropdown open
+  false → Collections dropdown closed
+  true  → Collections dropdown open
   */
 
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isCollectionsOpen, setIsCollectionsOpen] =
+    useState(false);
 
 
   /*
@@ -46,12 +91,12 @@ const Navbar = () => {
 
   /*
   ========================================================
-  TOGGLE SERVICES MENU
+  TOGGLE COLLECTIONS MENU
   ========================================================
   */
 
-  const toggleServices = () => {
-    setIsServicesOpen((prev) => !prev);
+  const toggleCollections = () => {
+    setIsCollectionsOpen((prev) => !prev);
   };
 
 
@@ -104,7 +149,9 @@ const Navbar = () => {
           "
         >
 
-          {/* HOME */}
+          {/* ==================================================
+              HOME
+              ================================================== */}
 
           <a
             href="#"
@@ -112,7 +159,9 @@ const Navbar = () => {
               text-sm
               font-medium
               text-gray-700
+
               transition
+
               hover:text-black
             "
           >
@@ -120,32 +169,16 @@ const Navbar = () => {
           </a>
 
 
-          {/* ABOUT */}
-
-          <a
-            href="#"
-            className="
-              text-sm
-              font-medium
-              text-gray-700
-              transition
-              hover:text-black
-            "
-          >
-            About
-          </a>
-
-
           {/* ==================================================
-              DESKTOP SERVICES DROPDOWN
+              COLLECTIONS
               ================================================== */}
 
           <div className="relative">
 
-            {/* Services button */}
+            {/* Collections button */}
 
             <button
-              onClick={toggleServices}
+              onClick={toggleCollections}
 
               className="
                 flex
@@ -164,7 +197,7 @@ const Navbar = () => {
               "
             >
 
-              Services
+              Collections
 
               <ChevronDown
                 size={16}
@@ -174,7 +207,7 @@ const Navbar = () => {
                   duration-200
 
                   ${
-                    isServicesOpen
+                    isCollectionsOpen
                       ? "rotate-180"
                       : "rotate-0"
                   }
@@ -185,7 +218,7 @@ const Navbar = () => {
 
 
             {/* ==================================================
-                DESKTOP DROPDOWN
+                DESKTOP COLLECTIONS MEGA MENU
                 ================================================== */}
 
             <div
@@ -194,98 +227,124 @@ const Navbar = () => {
                 left-1/2
                 top-full
                 z-50
+
                 mt-4
-                w-56
+
+                w-[700px]
                 -translate-x-1/2
 
-                rounded-xl
+                rounded-2xl
                 border
                 bg-white
-                p-2
-                shadow-xl
+                p-4
+                shadow-2xl
 
                 transition-all
                 duration-200
 
                 ${
-                  isServicesOpen
+                  isCollectionsOpen
                     ? "visible translate-y-0 opacity-100"
                     : "invisible -translate-y-2 opacity-0"
                 }
               `}
             >
 
-              <a
-                href="#"
-                className="
-                  block
-                  rounded-lg
-                  px-4
-                  py-3
+              {/* ==================================================
+                  COLLECTION GRID
+                  ================================================== */}
 
-                  text-sm
-                  font-medium
-                  text-gray-700
+              <div className="grid grid-cols-2 gap-4">
 
-                  transition
+                {collections.map((collection) => (
 
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                Web Development
-              </a>
+                  <a
+                    key={collection.title}
+                    href="#"
+
+                    className="
+                      group
+                      flex
+                      gap-4
+
+                      rounded-xl
+                      p-3
+
+                      transition
+
+                      hover:bg-gray-100
+                    "
+                  >
+
+                    {/* ==================================================
+                        COLLECTION IMAGE
+                        ================================================== */}
+
+                    <img
+                      src={collection.image}
+                      alt={collection.title}
+
+                      className="
+                        h-20
+                        w-20
+                        shrink-0
+
+                        rounded-lg
+
+                        object-cover
+
+                        transition
+                        duration-300
+
+                        group-hover:scale-105
+                      "
+                    />
 
 
-              <a
-                href="#"
-                className="
-                  block
-                  rounded-lg
-                  px-4
-                  py-3
+                    {/* ==================================================
+                        COLLECTION CONTENT
+                        ================================================== */}
 
-                  text-sm
-                  font-medium
-                  text-gray-700
+                    <div>
 
-                  transition
-
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                Mobile Development
-              </a>
+                      <h3
+                        className="
+                          text-sm
+                          font-semibold
+                          text-gray-900
+                        "
+                      >
+                        {collection.title}
+                      </h3>
 
 
-              <a
-                href="#"
-                className="
-                  block
-                  rounded-lg
-                  px-4
-                  py-3
+                      <p
+                        className="
+                          mt-1
+                          text-xs
+                          leading-5
+                          text-gray-500
+                        "
+                      >
+                        {collection.description}
+                      </p>
 
-                  text-sm
-                  font-medium
-                  text-gray-700
+                    </div>
 
-                  transition
+                  </a>
 
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-                UI/UX Design
-              </a>
+                ))}
+
+              </div>
 
             </div>
 
           </div>
 
 
-          {/* CONTACT */}
+          {/* ==================================================
+              ABOUT
+              ================================================== */}
 
           <a
             href="#"
@@ -293,7 +352,29 @@ const Navbar = () => {
               text-sm
               font-medium
               text-gray-700
+
               transition
+
+              hover:text-black
+            "
+          >
+            About
+          </a>
+
+
+          {/* ==================================================
+              CONTACT
+              ================================================== */}
+
+          <a
+            href="#"
+            className="
+              text-sm
+              font-medium
+              text-gray-700
+
+              transition
+
               hover:text-black
             "
           >
@@ -313,6 +394,7 @@ const Navbar = () => {
           className="
             rounded-lg
             p-2
+
             text-gray-700
 
             transition
@@ -365,7 +447,7 @@ const Navbar = () => {
 
           ${
             isMenuOpen
-              ? "max-h-96 opacity-100"
+              ? "max-h-[700px] opacity-100"
               : "max-h-0 opacity-0"
           }
         `}
@@ -382,7 +464,9 @@ const Navbar = () => {
 
           <nav className="flex flex-col">
 
-            {/* HOME */}
+            {/* ==================================================
+                HOME
+                ================================================== */}
 
             <a
               href="#"
@@ -405,39 +489,16 @@ const Navbar = () => {
             </a>
 
 
-            {/* ABOUT */}
-
-            <a
-              href="#"
-              className="
-                rounded-lg
-                px-4
-                py-3
-
-                text-sm
-                font-medium
-                text-gray-700
-
-                transition
-
-                hover:bg-gray-100
-                hover:text-black
-              "
-            >
-              About
-            </a>
-
-
             {/* ==================================================
-                MOBILE SERVICES
+                MOBILE COLLECTIONS
                 ================================================== */}
 
             <div>
 
-              {/* Services button */}
+              {/* Collections button */}
 
               <button
-                onClick={toggleServices}
+                onClick={toggleCollections}
 
                 className="
                   flex
@@ -461,7 +522,7 @@ const Navbar = () => {
               >
 
                 <span>
-                  Services
+                  Collections
                 </span>
 
 
@@ -473,7 +534,7 @@ const Navbar = () => {
                     duration-200
 
                     ${
-                      isServicesOpen
+                      isCollectionsOpen
                         ? "rotate-180"
                         : "rotate-0"
                     }
@@ -484,7 +545,7 @@ const Navbar = () => {
 
 
               {/* ==================================================
-                  MOBILE SERVICES SUBMENU
+                  MOBILE COLLECTIONS SUBMENU
                   ================================================== */}
 
               <div
@@ -492,73 +553,97 @@ const Navbar = () => {
                   overflow-hidden
 
                   transition-all
-                  duration-200
+                  duration-300
 
                   ${
-                    isServicesOpen
-                      ? "max-h-60 opacity-100"
+                    isCollectionsOpen
+                      ? "max-h-[500px] opacity-100"
                       : "max-h-0 opacity-0"
                   }
                 `}
               >
 
-                <div className="ml-4 border-l pl-4">
+                <div
+                  className="
+                    ml-4
+                    space-y-2
+                    border-l
+                    pl-4
+                  "
+                >
 
-                  <a
-                    href="#"
-                    className="
-                      block
-                      rounded-lg
-                      px-4
-                      py-2
+                  {collections.map((collection) => (
 
-                      text-sm
-                      text-gray-600
+                    <a
+                      key={collection.title}
+                      href="#"
 
-                      hover:bg-gray-100
-                      hover:text-black
-                    "
-                  >
-                    Web Development
-                  </a>
+                      className="
+                        group
+                        flex
+                        items-center
+                        gap-3
+
+                        rounded-lg
+                        p-2
+
+                        transition
+
+                        hover:bg-gray-100
+                      "
+                    >
+
+                      {/* ==================================================
+                          MOBILE COLLECTION IMAGE
+                          ================================================== */}
+
+                      <img
+                        src={collection.image}
+                        alt={collection.title}
+
+                        className="
+                          h-12
+                          w-12
+                          shrink-0
+
+                          rounded-lg
+
+                          object-cover
+                        "
+                      />
 
 
-                  <a
-                    href="#"
-                    className="
-                      block
-                      rounded-lg
-                      px-4
-                      py-2
+                      {/* ==================================================
+                          MOBILE COLLECTION CONTENT
+                          ================================================== */}
 
-                      text-sm
-                      text-gray-600
+                      <div>
 
-                      hover:bg-gray-100
-                      hover:text-black
-                    "
-                  >
-                    Mobile Development
-                  </a>
+                        <h3
+                          className="
+                            text-sm
+                            font-medium
+                            text-gray-800
+                          "
+                        >
+                          {collection.title}
+                        </h3>
 
 
-                  <a
-                    href="#"
-                    className="
-                      block
-                      rounded-lg
-                      px-4
-                      py-2
+                        <p
+                          className="
+                            text-xs
+                            text-gray-500
+                          "
+                        >
+                          {collection.description}
+                        </p>
 
-                      text-sm
-                      text-gray-600
+                      </div>
 
-                      hover:bg-gray-100
-                      hover:text-black
-                    "
-                  >
-                    UI/UX Design
-                  </a>
+                    </a>
+
+                  ))}
 
                 </div>
 
@@ -567,7 +652,34 @@ const Navbar = () => {
             </div>
 
 
-            {/* CONTACT */}
+            {/* ==================================================
+                ABOUT
+                ================================================== */}
+
+            <a
+              href="#"
+              className="
+                rounded-lg
+                px-4
+                py-3
+
+                text-sm
+                font-medium
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+              "
+            >
+              About
+            </a>
+
+
+            {/* ==================================================
+                CONTACT
+                ================================================== */}
 
             <a
               href="#"
