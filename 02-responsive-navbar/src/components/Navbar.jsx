@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import {
   Menu,
   X,
   ChevronDown,
 } from "lucide-react";
+
 
 const Navbar = () => {
 
@@ -11,15 +18,6 @@ const Navbar = () => {
   ========================================================
   JEWELLERY COLLECTIONS DATA
   ========================================================
-
-  We store our collection information in an array.
-
-  Instead of writing the same JSX repeatedly,
-  we can use:
-
-  collections.map(...)
-
-  This makes the navbar easier to maintain.
   */
 
   const collections = [
@@ -58,8 +56,8 @@ const Navbar = () => {
   MOBILE MENU STATE
   ========================================================
 
-  false → mobile menu closed
-  true  → mobile menu open
+  false = mobile menu closed
+  true  = mobile menu open
   */
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,15 +65,64 @@ const Navbar = () => {
 
   /*
   ========================================================
-  COLLECTIONS DROPDOWN STATE
+  COLLECTIONS MENU STATE
   ========================================================
 
-  false → Collections dropdown closed
-  true  → Collections dropdown open
+  false = collections menu closed
+  true  = collections menu open
   */
 
   const [isCollectionsOpen, setIsCollectionsOpen] =
     useState(false);
+
+
+  /*
+  ========================================================
+  DESKTOP COLLECTIONS REF
+  ========================================================
+  */
+
+  const desktopCollectionsRef = useRef(null);
+
+
+  /*
+  ========================================================
+  CLOSE DESKTOP COLLECTIONS WHEN CLICKING OUTSIDE
+  ========================================================
+  */
+
+  useEffect(() => {
+
+    const handleClickOutside = (event) => {
+
+      if (
+        desktopCollectionsRef.current &&
+        !desktopCollectionsRef.current.contains(
+          event.target
+        )
+      ) {
+        setIsCollectionsOpen(false);
+      }
+
+    };
+
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+
+    return () => {
+
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+
+    };
+
+  }, []);
 
 
   /*
@@ -85,7 +132,9 @@ const Navbar = () => {
   */
 
   const toggleMenu = () => {
+
     setIsMenuOpen((prev) => !prev);
+
   };
 
 
@@ -96,12 +145,16 @@ const Navbar = () => {
   */
 
   const toggleCollections = () => {
+
     setIsCollectionsOpen((prev) => !prev);
+
   };
 
 
   return (
+
     <nav className="border-b bg-white">
+
 
       {/* ==================================================
           NAVBAR CONTAINER
@@ -119,12 +172,14 @@ const Navbar = () => {
         "
       >
 
+
         {/* ==================================================
             LOGO
             ================================================== */}
 
         <a
           href="/"
+
           className="
             text-2xl
             font-bold
@@ -149,12 +204,14 @@ const Navbar = () => {
           "
         >
 
+
           {/* ==================================================
               HOME
               ================================================== */}
 
           <a
             href="#"
+
             className="
               text-sm
               font-medium
@@ -170,14 +227,20 @@ const Navbar = () => {
 
 
           {/* ==================================================
-              COLLECTIONS
+              DESKTOP COLLECTIONS
               ================================================== */}
 
-          <div className="relative">
+          <div
+            ref={desktopCollectionsRef}
+            className="relative"
+          >
 
-            {/* Collections button */}
+
+            {/* COLLECTIONS BUTTON */}
 
             <button
+              type="button"
+
               onClick={toggleCollections}
 
               className="
@@ -199,60 +262,31 @@ const Navbar = () => {
 
               Collections
 
+
               <ChevronDown
                 size={16}
 
-                className={`
-                  transition-transform
-                  duration-200
-
-                  ${
-                    isCollectionsOpen
-                      ? "rotate-180"
-                      : "rotate-0"
-                  }
-                `}
+                className={
+                  isCollectionsOpen
+                    ? "rotate-180 transition-transform duration-200"
+                    : "rotate-0 transition-transform duration-200"
+                }
               />
 
             </button>
 
 
             {/* ==================================================
-                DESKTOP COLLECTIONS MEGA MENU
+                DESKTOP MEGA MENU
                 ================================================== */}
 
             <div
-              className={`
-                absolute
-                left-1/2
-                top-full
-                z-50
-
-                mt-4
-
-                w-[700px]
-                -translate-x-1/2
-
-                rounded-2xl
-                border
-                bg-white
-                p-4
-                shadow-2xl
-
-                transition-all
-                duration-200
-
-                ${
-                  isCollectionsOpen
-                    ? "visible translate-y-0 opacity-100"
-                    : "invisible -translate-y-2 opacity-0"
-                }
-              `}
+              className={
+                isCollectionsOpen
+                  ? "visible absolute left-1/2 top-full z-50 mt-4 w-[700px] -translate-x-1/2 translate-y-0 rounded-2xl border bg-white p-4 opacity-100 shadow-2xl transition-all duration-200"
+                  : "invisible absolute left-1/2 top-full z-50 mt-4 w-[700px] -translate-x-1/2 -translate-y-2 rounded-2xl border bg-white p-4 opacity-0 shadow-2xl transition-all duration-200"
+              }
             >
-
-              {/* ==================================================
-                  COLLECTION GRID
-                  ================================================== */}
 
               <div className="grid grid-cols-2 gap-4">
 
@@ -260,6 +294,7 @@ const Navbar = () => {
 
                   <a
                     key={collection.title}
+
                     href="#"
 
                     className="
@@ -268,6 +303,7 @@ const Navbar = () => {
                       gap-4
 
                       rounded-xl
+
                       p-3
 
                       transition
@@ -276,17 +312,17 @@ const Navbar = () => {
                     "
                   >
 
-                    {/* ==================================================
-                        COLLECTION IMAGE
-                        ================================================== */}
+                    {/* IMAGE */}
 
                     <img
                       src={collection.image}
+
                       alt={collection.title}
 
                       className="
                         h-20
                         w-20
+
                         shrink-0
 
                         rounded-lg
@@ -301,9 +337,7 @@ const Navbar = () => {
                     />
 
 
-                    {/* ==================================================
-                        COLLECTION CONTENT
-                        ================================================== */}
+                    {/* CONTENT */}
 
                     <div>
 
@@ -321,8 +355,10 @@ const Navbar = () => {
                       <p
                         className="
                           mt-1
+
                           text-xs
                           leading-5
+
                           text-gray-500
                         "
                       >
@@ -348,6 +384,7 @@ const Navbar = () => {
 
           <a
             href="#"
+
             className="
               text-sm
               font-medium
@@ -368,6 +405,7 @@ const Navbar = () => {
 
           <a
             href="#"
+
             className="
               text-sm
               font-medium
@@ -389,10 +427,13 @@ const Navbar = () => {
             ================================================== */}
 
         <button
+          type="button"
+
           onClick={toggleMenu}
 
           className="
             rounded-lg
+
             p-2
 
             text-gray-700
@@ -419,9 +460,13 @@ const Navbar = () => {
         >
 
           {isMenuOpen ? (
+
             <X size={24} />
+
           ) : (
+
             <Menu size={24} />
+
           )}
 
         </button>
@@ -434,23 +479,11 @@ const Navbar = () => {
           ================================================== */}
 
       <div
-        className={`
-          overflow-hidden
-          border-t
-          bg-white
-
-          transition-all
-          duration-300
-          ease-in-out
-
-          md:hidden
-
-          ${
-            isMenuOpen
-              ? "max-h-[700px] opacity-100"
-              : "max-h-0 opacity-0"
-          }
-        `}
+        className={
+          isMenuOpen
+            ? "max-h-[700px] overflow-hidden border-t bg-white opacity-100 transition-all duration-300 ease-in-out md:hidden"
+            : "max-h-0 overflow-hidden border-t bg-white opacity-0 transition-all duration-300 ease-in-out md:hidden"
+        }
       >
 
         <div
@@ -464,19 +497,27 @@ const Navbar = () => {
 
           <nav className="flex flex-col">
 
+
             {/* ==================================================
                 HOME
                 ================================================== */}
 
             <a
               href="#"
+
               className="
+                flex
+                w-full
+                items-center
+
                 rounded-lg
+
                 px-4
                 py-3
 
                 text-sm
                 font-medium
+
                 text-gray-700
 
                 transition
@@ -490,28 +531,36 @@ const Navbar = () => {
 
 
             {/* ==================================================
-                MOBILE COLLECTIONS
+                COLLECTIONS
                 ================================================== */}
 
-            <div>
+            <div className="w-full">
 
-              {/* Collections button */}
+
+              {/* ==================================================
+                  COLLECTIONS BUTTON
+                  ================================================== */}
 
               <button
+                type="button"
+
                 onClick={toggleCollections}
 
                 className="
                   flex
                   w-full
+
                   items-center
                   justify-between
 
                   rounded-lg
+
                   px-4
                   py-3
 
                   text-sm
                   font-medium
+
                   text-gray-700
 
                   transition
@@ -529,44 +578,31 @@ const Navbar = () => {
                 <ChevronDown
                   size={18}
 
-                  className={`
-                    transition-transform
-                    duration-200
-
-                    ${
-                      isCollectionsOpen
-                        ? "rotate-180"
-                        : "rotate-0"
-                    }
-                  `}
+                  className={
+                    isCollectionsOpen
+                      ? "rotate-180 transition-transform duration-200"
+                      : "rotate-0 transition-transform duration-200"
+                  }
                 />
 
               </button>
 
 
               {/* ==================================================
-                  MOBILE COLLECTIONS SUBMENU
+                  COLLECTIONS SUBMENU
                   ================================================== */}
 
               <div
-                className={`
-                  overflow-hidden
-
-                  transition-all
-                  duration-300
-
-                  ${
-                    isCollectionsOpen
-                      ? "max-h-[500px] opacity-100"
-                      : "max-h-0 opacity-0"
-                  }
-                `}
+                className={
+                  isCollectionsOpen
+                    ? "max-h-[500px] overflow-hidden opacity-100 transition-all duration-300"
+                    : "max-h-0 overflow-hidden opacity-0 transition-all duration-300"
+                }
               >
 
                 <div
                   className="
                     ml-4
-                    space-y-2
                     border-l
                     pl-4
                   "
@@ -576,15 +612,19 @@ const Navbar = () => {
 
                     <a
                       key={collection.title}
+
                       href="#"
 
                       className="
                         group
+
                         flex
                         items-center
+
                         gap-3
 
                         rounded-lg
+
                         p-2
 
                         transition
@@ -599,11 +639,13 @@ const Navbar = () => {
 
                       <img
                         src={collection.image}
+
                         alt={collection.title}
 
                         className="
                           h-12
                           w-12
+
                           shrink-0
 
                           rounded-lg
@@ -623,6 +665,7 @@ const Navbar = () => {
                           className="
                             text-sm
                             font-medium
+
                             text-gray-800
                           "
                         >
@@ -633,6 +676,7 @@ const Navbar = () => {
                         <p
                           className="
                             text-xs
+
                             text-gray-500
                           "
                         >
@@ -658,13 +702,20 @@ const Navbar = () => {
 
             <a
               href="#"
+
               className="
+                flex
+                w-full
+                items-center
+
                 rounded-lg
+
                 px-4
                 py-3
 
                 text-sm
                 font-medium
+
                 text-gray-700
 
                 transition
@@ -683,13 +734,20 @@ const Navbar = () => {
 
             <a
               href="#"
+
               className="
+                flex
+                w-full
+                items-center
+
                 rounded-lg
+
                 px-4
                 py-3
 
                 text-sm
                 font-medium
+
                 text-gray-700
 
                 transition
@@ -711,4 +769,6 @@ const Navbar = () => {
   );
 };
 
+
 export default Navbar;
+
