@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+} from "lucide-react";
 
 const Navbar = () => {
 
@@ -8,17 +12,8 @@ const Navbar = () => {
   MOBILE MENU STATE
   ========================================================
 
-  isMenuOpen
-  → stores whether the mobile menu is open.
-
-  false
-  → menu is closed
-
-  true
-  → menu is open
-
-  setIsMenuOpen()
-  → changes the state.
+  false → mobile menu closed
+  true  → mobile menu open
   */
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,20 +21,37 @@ const Navbar = () => {
 
   /*
   ========================================================
-  TOGGLE MOBILE MENU
+  SERVICES DROPDOWN STATE
   ========================================================
 
-  If the menu is closed:
-  false → true
+  This controls the nested Services menu.
 
-  If the menu is open:
-  true → false
+  false → Services dropdown closed
+  true  → Services dropdown open
+  */
 
-  The ! operator reverses the current value.
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+
+
+  /*
+  ========================================================
+  TOGGLE MOBILE MENU
+  ========================================================
   */
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
+  };
+
+
+  /*
+  ========================================================
+  TOGGLE SERVICES MENU
+  ========================================================
+  */
+
+  const toggleServices = () => {
+    setIsServicesOpen((prev) => !prev);
   };
 
 
@@ -81,23 +93,7 @@ const Navbar = () => {
 
         {/* ==================================================
             DESKTOP NAVIGATION
-            ==================================================
-
-            hidden
-            → hidden by default
-
-            md:flex
-            → becomes flex from medium screens
-              and above.
-
-            Therefore:
-
-            Mobile:
-            navigation hidden
-
-            Desktop:
-            navigation visible
-        */}
+            ================================================== */}
 
         <div
           className="
@@ -107,6 +103,8 @@ const Navbar = () => {
             md:flex
           "
         >
+
+          {/* HOME */}
 
           <a
             href="#"
@@ -121,6 +119,9 @@ const Navbar = () => {
             Home
           </a>
 
+
+          {/* ABOUT */}
+
           <a
             href="#"
             className="
@@ -134,18 +135,157 @@ const Navbar = () => {
             About
           </a>
 
-          <a
-            href="#"
-            className="
-              text-sm
-              font-medium
-              text-gray-700
-              transition
-              hover:text-black
-            "
-          >
-            Services
-          </a>
+
+          {/* ==================================================
+              DESKTOP SERVICES DROPDOWN
+              ================================================== */}
+
+          <div className="relative">
+
+            {/* Services button */}
+
+            <button
+              onClick={toggleServices}
+
+              className="
+                flex
+                items-center
+                gap-1
+
+                text-sm
+                font-medium
+                text-gray-700
+
+                transition
+
+                hover:text-black
+
+                focus:outline-none
+              "
+            >
+
+              Services
+
+              <ChevronDown
+                size={16}
+
+                className={`
+                  transition-transform
+                  duration-200
+
+                  ${
+                    isServicesOpen
+                      ? "rotate-180"
+                      : "rotate-0"
+                  }
+                `}
+              />
+
+            </button>
+
+
+            {/* ==================================================
+                DESKTOP DROPDOWN
+                ================================================== */}
+
+            <div
+              className={`
+                absolute
+                left-1/2
+                top-full
+                z-50
+                mt-4
+                w-56
+                -translate-x-1/2
+
+                rounded-xl
+                border
+                bg-white
+                p-2
+                shadow-xl
+
+                transition-all
+                duration-200
+
+                ${
+                  isServicesOpen
+                    ? "visible translate-y-0 opacity-100"
+                    : "invisible -translate-y-2 opacity-0"
+                }
+              `}
+            >
+
+              <a
+                href="#"
+                className="
+                  block
+                  rounded-lg
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+                Web Development
+              </a>
+
+
+              <a
+                href="#"
+                className="
+                  block
+                  rounded-lg
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+                Mobile Development
+              </a>
+
+
+              <a
+                href="#"
+                className="
+                  block
+                  rounded-lg
+                  px-4
+                  py-3
+
+                  text-sm
+                  font-medium
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+                UI/UX Design
+              </a>
+
+            </div>
+
+          </div>
+
+
+          {/* CONTACT */}
 
           <a
             href="#"
@@ -165,19 +305,7 @@ const Navbar = () => {
 
         {/* ==================================================
             MOBILE MENU BUTTON
-            ==================================================
-
-            md:hidden
-            → button disappears on desktop.
-
-            Therefore:
-
-            Mobile:
-            hamburger visible
-
-            Desktop:
-            hamburger hidden
-        */}
+            ================================================== */}
 
         <button
           onClick={toggleMenu}
@@ -221,165 +349,251 @@ const Navbar = () => {
 
       {/* ==================================================
           MOBILE NAVIGATION
-          ==================================================
+          ================================================== */}
 
-          We only display this when:
+      <div
+        className={`
+          overflow-hidden
+          border-t
+          bg-white
 
-          isMenuOpen === true
+          transition-all
+          duration-300
+          ease-in-out
 
-          The && operator means:
+          md:hidden
 
-          condition && JSX
-
-          If condition is true:
-          render JSX
-
-          If condition is false:
-          render nothing.
-      */}
-
-      {/* ==================================================
-    MOBILE NAVIGATION
-    ==================================================
-
-    Instead of completely removing the menu
-    from the DOM, we keep it in the DOM and
-    animate its height and opacity.
-
-    CLOSED:
-
-    max-h-0
-    opacity-0
-
-    OPEN:
-
-    max-h-96
-    opacity-100
-    ================================================== */}
-
-<div
-  className={`
-    overflow-hidden
-    border-t
-    bg-white
-
-    transition-all
-    duration-300
-    ease-in-out
-
-    md:hidden
-
-    ${
-      isMenuOpen
-        ? "max-h-96 opacity-100"
-        : "max-h-0 opacity-0"
-    }
-  `}
->
-
-  <div
-    className="
-      mx-auto
-      max-w-7xl
-      px-6
-      py-4
-    "
-  >
-
-    <nav className="flex flex-col">
-
-      {/* HOME */}
-
-      <a
-        href="#"
-        className="
-          rounded-lg
-          px-4
-          py-3
-          text-sm
-          font-medium
-          text-gray-700
-
-          transition
-
-          hover:bg-gray-100
-          hover:text-black
-        "
+          ${
+            isMenuOpen
+              ? "max-h-96 opacity-100"
+              : "max-h-0 opacity-0"
+          }
+        `}
       >
-        Home
-      </a>
+
+        <div
+          className="
+            mx-auto
+            max-w-7xl
+            px-6
+            py-4
+          "
+        >
+
+          <nav className="flex flex-col">
+
+            {/* HOME */}
+
+            <a
+              href="#"
+              className="
+                rounded-lg
+                px-4
+                py-3
+
+                text-sm
+                font-medium
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+              "
+            >
+              Home
+            </a>
 
 
-      {/* ABOUT */}
+            {/* ABOUT */}
 
-      <a
-        href="#"
-        className="
-          rounded-lg
-          px-4
-          py-3
-          text-sm
-          font-medium
-          text-gray-700
+            <a
+              href="#"
+              className="
+                rounded-lg
+                px-4
+                py-3
 
-          transition
+                text-sm
+                font-medium
+                text-gray-700
 
-          hover:bg-gray-100
-          hover:text-black
-        "
-      >
-        About
-      </a>
+                transition
 
-
-      {/* SERVICES */}
-
-      <a
-        href="#"
-        className="
-          rounded-lg
-          px-4
-          py-3
-          text-sm
-          font-medium
-          text-gray-700
-
-          transition
-
-          hover:bg-gray-100
-          hover:text-black
-        "
-      >
-        Services
-      </a>
+                hover:bg-gray-100
+                hover:text-black
+              "
+            >
+              About
+            </a>
 
 
-      {/* CONTACT */}
+            {/* ==================================================
+                MOBILE SERVICES
+                ================================================== */}
 
-      <a
-        href="#"
-        className="
-          rounded-lg
-          px-4
-          py-3
-          text-sm
-          font-medium
-          text-gray-700
+            <div>
 
-          transition
+              {/* Services button */}
 
-          hover:bg-gray-100
-          hover:text-black
-        "
-      >
-        Contact
-      </a>
+              <button
+                onClick={toggleServices}
 
-    </nav>
+                className="
+                  flex
+                  w-full
+                  items-center
+                  justify-between
 
-  </div>
+                  rounded-lg
+                  px-4
+                  py-3
 
-</div>
+                  text-sm
+                  font-medium
+                  text-gray-700
+
+                  transition
+
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <span>
+                  Services
+                </span>
+
+
+                <ChevronDown
+                  size={18}
+
+                  className={`
+                    transition-transform
+                    duration-200
+
+                    ${
+                      isServicesOpen
+                        ? "rotate-180"
+                        : "rotate-0"
+                    }
+                  `}
+                />
+
+              </button>
+
+
+              {/* ==================================================
+                  MOBILE SERVICES SUBMENU
+                  ================================================== */}
+
+              <div
+                className={`
+                  overflow-hidden
+
+                  transition-all
+                  duration-200
+
+                  ${
+                    isServicesOpen
+                      ? "max-h-60 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }
+                `}
+              >
+
+                <div className="ml-4 border-l pl-4">
+
+                  <a
+                    href="#"
+                    className="
+                      block
+                      rounded-lg
+                      px-4
+                      py-2
+
+                      text-sm
+                      text-gray-600
+
+                      hover:bg-gray-100
+                      hover:text-black
+                    "
+                  >
+                    Web Development
+                  </a>
+
+
+                  <a
+                    href="#"
+                    className="
+                      block
+                      rounded-lg
+                      px-4
+                      py-2
+
+                      text-sm
+                      text-gray-600
+
+                      hover:bg-gray-100
+                      hover:text-black
+                    "
+                  >
+                    Mobile Development
+                  </a>
+
+
+                  <a
+                    href="#"
+                    className="
+                      block
+                      rounded-lg
+                      px-4
+                      py-2
+
+                      text-sm
+                      text-gray-600
+
+                      hover:bg-gray-100
+                      hover:text-black
+                    "
+                  >
+                    UI/UX Design
+                  </a>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {/* CONTACT */}
+
+            <a
+              href="#"
+              className="
+                rounded-lg
+                px-4
+                py-3
+
+                text-sm
+                font-medium
+                text-gray-700
+
+                transition
+
+                hover:bg-gray-100
+                hover:text-black
+              "
+            >
+              Contact
+            </a>
+
+          </nav>
+
+        </div>
+
+      </div>
 
     </nav>
   );
