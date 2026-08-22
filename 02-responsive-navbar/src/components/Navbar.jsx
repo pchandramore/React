@@ -97,7 +97,8 @@ const Navbar = () => {
   ========================================================
   */
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] =
+    useState(false);
 
 
   /*
@@ -147,11 +148,32 @@ const Navbar = () => {
 
   /*
   ========================================================
+  WISHLIST STATE
+  ========================================================
+  */
+
+  const [wishlist, setWishlist] =
+    useState([]);
+
+
+  /*
+  ========================================================
+  WISHLIST PANEL STATE
+  ========================================================
+  */
+
+  const [isWishlistOpen, setIsWishlistOpen] =
+    useState(false);
+
+
+  /*
+  ========================================================
   DESKTOP COLLECTIONS REF
   ========================================================
   */
 
-  const desktopCollectionsRef = useRef(null);
+  const desktopCollectionsRef =
+    useRef(null);
 
 
   /*
@@ -160,20 +182,24 @@ const Navbar = () => {
   ========================================================
   */
 
-  const accountRef = useRef(null);
+  const accountRef =
+    useRef(null);
 
 
   /*
   ========================================================
-  CLICK OUTSIDE HANDLER
+  WISHLIST REF
   ========================================================
+  */
 
-  Closes:
+  const wishlistRef =
+    useRef(null);
 
-  - Collections
-  - Account
 
-  when the user clicks outside those areas.
+  /*
+  ========================================================
+  CLOSE DROPDOWNS WHEN CLICKING OUTSIDE
+  ========================================================
   */
 
   useEffect(() => {
@@ -211,6 +237,22 @@ const Navbar = () => {
 
       }
 
+
+      /*
+      Close Wishlist
+      */
+
+      if (
+        wishlistRef.current &&
+        !wishlistRef.current.contains(
+          event.target
+        )
+      ) {
+
+        setIsWishlistOpen(false);
+
+      }
+
     };
 
 
@@ -234,15 +276,17 @@ const Navbar = () => {
 
   /*
   ========================================================
-  FILTER PRODUCTS
+  SEARCH FILTER
   ========================================================
   */
 
-  const filteredProducts = products.filter(
-    (product) => {
+  const filteredProducts =
+    products.filter((product) => {
 
       const searchText =
-        searchQuery.toLowerCase().trim();
+        searchQuery
+          .toLowerCase()
+          .trim();
 
 
       return (
@@ -257,8 +301,7 @@ const Navbar = () => {
           .includes(searchText)
       );
 
-    }
-  );
+    });
 
 
   /*
@@ -269,7 +312,9 @@ const Navbar = () => {
 
   const toggleMenu = () => {
 
-    setIsMenuOpen((prev) => !prev);
+    setIsMenuOpen(
+      (prev) => !prev
+    );
 
   };
 
@@ -282,13 +327,12 @@ const Navbar = () => {
 
   const toggleCollections = () => {
 
-    setIsCollectionsOpen((prev) => !prev);
-
-    /*
-    Close Account
-    */
+    setIsCollectionsOpen(
+      (prev) => !prev
+    );
 
     setIsAccountOpen(false);
+    setIsWishlistOpen(false);
 
   };
 
@@ -305,10 +349,6 @@ const Navbar = () => {
       (prev) => !prev
     );
 
-    /*
-    Close Account
-    */
-
     setIsAccountOpen(false);
 
   };
@@ -322,13 +362,12 @@ const Navbar = () => {
 
   const toggleSearch = () => {
 
-    setIsSearchOpen((prev) => !prev);
-
-    /*
-    Close Account
-    */
+    setIsSearchOpen(
+      (prev) => !prev
+    );
 
     setIsAccountOpen(false);
+    setIsWishlistOpen(false);
 
   };
 
@@ -356,15 +395,91 @@ const Navbar = () => {
 
   const toggleAccount = () => {
 
-    setIsAccountOpen((prev) => !prev);
-
-    /*
-    Close other dropdowns
-    */
+    setIsAccountOpen(
+      (prev) => !prev
+    );
 
     setIsCollectionsOpen(false);
+    setIsWishlistOpen(false);
 
-    setIsMobileCollectionsOpen(false);
+  };
+
+
+  /*
+  ========================================================
+  TOGGLE WISHLIST PANEL
+  ========================================================
+  */
+
+  const toggleWishlistPanel = () => {
+
+    setIsWishlistOpen(
+      (prev) => !prev
+    );
+
+    setIsAccountOpen(false);
+    setIsCollectionsOpen(false);
+
+  };
+
+
+  /*
+  ========================================================
+  TOGGLE WISHLIST PRODUCT
+  ========================================================
+  */
+
+  const toggleWishlist = (product) => {
+
+    setWishlist((prevWishlist) => {
+
+      const isAlreadyInWishlist =
+        prevWishlist.some(
+          (item) =>
+            item.id === product.id
+        );
+
+
+      /*
+      REMOVE PRODUCT
+      */
+
+      if (isAlreadyInWishlist) {
+
+        return prevWishlist.filter(
+          (item) =>
+            item.id !== product.id
+        );
+
+      }
+
+
+      /*
+      ADD PRODUCT
+      */
+
+      return [
+        ...prevWishlist,
+        product,
+      ];
+
+    });
+
+  };
+
+
+  /*
+  ========================================================
+  CHECK WHETHER PRODUCT IS IN WISHLIST
+  ========================================================
+  */
+
+  const isInWishlist = (productId) => {
+
+    return wishlist.some(
+      (item) =>
+        item.id === productId
+    );
 
   };
 
@@ -380,6 +495,7 @@ const Navbar = () => {
 
       <div
         className="
+          relative
           mx-auto
           flex
           max-w-7xl
@@ -492,72 +608,79 @@ const Navbar = () => {
               }
             >
 
-              <div className="grid grid-cols-2 gap-4">
+              <div
+                className="
+                  grid
+                  grid-cols-2
+                  gap-4
+                "
+              >
 
-                {collections.map((collection) => (
+                {collections.map(
+                  (collection) => (
 
-                  <a
-                    key={collection.title}
-
-                    href="#"
-
-                    className="
-                      group
-                      flex
-                      gap-4
-                      rounded-xl
-                      p-3
-                      transition
-                      hover:bg-gray-100
-                    "
-                  >
-
-                    <img
-                      src={collection.image}
-                      alt={collection.title}
+                    <a
+                      key={collection.title}
+                      href="#"
 
                       className="
-                        h-20
-                        w-20
-                        shrink-0
-                        rounded-lg
-                        object-cover
+                        group
+                        flex
+                        gap-4
+                        rounded-xl
+                        p-3
                         transition
-                        duration-300
-                        group-hover:scale-105
+                        hover:bg-gray-100
                       "
-                    />
+                    >
 
+                      <img
+                        src={collection.image}
+                        alt={collection.title}
 
-                    <div>
-
-                      <h3
                         className="
-                          text-sm
-                          font-semibold
-                          text-gray-900
+                          h-20
+                          w-20
+                          shrink-0
+                          rounded-lg
+                          object-cover
+                          transition
+                          duration-300
+                          group-hover:scale-105
                         "
-                      >
-                        {collection.title}
-                      </h3>
+                      />
 
 
-                      <p
-                        className="
-                          mt-1
-                          text-xs
-                          leading-5
-                          text-gray-500
-                        "
-                      >
-                        {collection.description}
-                      </p>
+                      <div>
 
-                    </div>
+                        <h3
+                          className="
+                            text-sm
+                            font-semibold
+                            text-gray-900
+                          "
+                        >
+                          {collection.title}
+                        </h3>
 
-                  </a>
 
-                ))}
+                        <p
+                          className="
+                            mt-1
+                            text-xs
+                            leading-5
+                            text-gray-500
+                          "
+                        >
+                          {collection.description}
+                        </p>
+
+                      </div>
+
+                    </a>
+
+                  )
+                )}
 
               </div>
 
@@ -601,7 +724,7 @@ const Navbar = () => {
 
 
           {/* ==================================================
-              DESKTOP UTILITY ICONS
+              DESKTOP ICONS
               ================================================== */}
 
           <div
@@ -614,7 +737,6 @@ const Navbar = () => {
               pl-6
             "
           >
-
 
             {/* SEARCH */}
 
@@ -657,7 +779,9 @@ const Navbar = () => {
 
                 aria-label="Account"
 
-                aria-expanded={isAccountOpen}
+                aria-expanded={
+                  isAccountOpen
+                }
 
                 className="
                   rounded-full
@@ -716,8 +840,8 @@ const Navbar = () => {
                       text-gray-500
                     "
                   >
-                    Sign in to your account to view
-                    your orders and profile.
+                    Sign in to your account to
+                    view your orders and profile.
                   </p>
 
 
@@ -764,29 +888,304 @@ const Navbar = () => {
             </div>
 
 
-            {/* WISHLIST */}
+            {/* ==================================================
+                WISHLIST
+                ================================================== */}
 
-            <button
-              type="button"
-
-              aria-label="Wishlist"
-
-              className="
-                rounded-full
-                p-2
-                text-gray-700
-                transition
-                hover:bg-gray-100
-                hover:text-black
-                focus:outline-none
-                focus:ring-2
-                focus:ring-gray-300
-              "
+            <div
+              ref={wishlistRef}
+              className="relative"
             >
 
-              <Heart size={19} />
+              <button
+                type="button"
 
-            </button>
+                onClick={toggleWishlistPanel}
+
+                aria-label="Wishlist"
+
+                aria-expanded={
+                  isWishlistOpen
+                }
+
+                className="
+                  relative
+                  rounded-full
+                  p-2
+                  text-gray-700
+                  transition
+                  hover:bg-gray-100
+                  hover:text-black
+                  focus:outline-none
+                  focus:ring-2
+                  focus:ring-gray-300
+                "
+              >
+
+                <Heart
+                  size={19}
+
+                  className={
+                    wishlist.length > 0
+                      ? "fill-red-500 text-red-500"
+                      : ""
+                  }
+                />
+
+
+                {wishlist.length > 0 && (
+
+                  <span
+                    className="
+                      absolute
+                      -right-1
+                      -top-1
+                      flex
+                      h-5
+                      min-w-5
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-black
+                      px-1
+                      text-[10px]
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    {wishlist.length}
+                  </span>
+
+                )}
+
+              </button>
+
+
+              {/* ==================================================
+                  WISHLIST PANEL
+                  ================================================== */}
+
+              {isWishlistOpen && (
+
+                <div
+                  className="
+                    absolute
+                    right-0
+                    top-full
+                    z-50
+                    mt-3
+                    w-80
+                    rounded-2xl
+                    border
+                    bg-white
+                    p-4
+                    shadow-2xl
+                  "
+                >
+
+                  {/* HEADER */}
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      border-b
+                      pb-3
+                    "
+                  >
+
+                    <h2
+                      className="
+                        text-base
+                        font-semibold
+                        text-gray-900
+                      "
+                    >
+                      My Wishlist
+                    </h2>
+
+
+                    <span
+                      className="
+                        text-xs
+                        text-gray-500
+                      "
+                    >
+                      {wishlist.length} item
+                      {wishlist.length !== 1
+                        ? "s"
+                        : ""}
+                    </span>
+
+                  </div>
+
+
+                  {/* EMPTY WISHLIST */}
+
+                  {wishlist.length === 0 ? (
+
+                    <div
+                      className="
+                        py-8
+                        text-center
+                      "
+                    >
+
+                      <Heart
+                        size={32}
+
+                        className="
+                          mx-auto
+                          text-gray-300
+                        "
+                      />
+
+
+                      <p
+                        className="
+                          mt-3
+                          text-sm
+                          text-gray-500
+                        "
+                      >
+                        Your wishlist is empty.
+                      </p>
+
+                    </div>
+
+                  ) : (
+
+                    /* ==================================================
+                       WISHLIST PRODUCTS
+                       ================================================== */
+
+                    <div
+                      className="
+                        mt-3
+                        max-h-80
+                        space-y-3
+                        overflow-y-auto
+                      "
+                    >
+
+                      {wishlist.map(
+                        (product) => (
+
+                          <div
+                            key={product.id}
+
+                            className="
+                              flex
+                              items-center
+                              gap-3
+                              rounded-lg
+                              p-2
+                              transition
+                              hover:bg-gray-50
+                            "
+                          >
+
+                            {/* PRODUCT IMAGE */}
+
+                            <img
+                              src={product.image}
+                              alt={product.name}
+
+                              className="
+                                h-14
+                                w-14
+                                shrink-0
+                                rounded-lg
+                                object-cover
+                              "
+                            />
+
+
+                            {/* PRODUCT DETAILS */}
+
+                            <div
+                              className="
+                                min-w-0
+                                flex-1
+                              "
+                            >
+
+                              <h3
+                                className="
+                                  truncate
+                                  text-sm
+                                  font-medium
+                                  text-gray-900
+                                "
+                              >
+                                {product.name}
+                              </h3>
+
+
+                              <p
+                                className="
+                                  mt-1
+                                  text-xs
+                                  text-gray-500
+                                "
+                              >
+                                {product.category}
+                              </p>
+
+                            </div>
+
+
+                            {/* REMOVE BUTTON */}
+
+                            <button
+                              type="button"
+
+                              onClick={() =>
+                                toggleWishlist(
+                                  product
+                                )
+                              }
+
+                              aria-label={
+                                `Remove ${product.name} ` +
+                                `from wishlist`
+                              }
+
+                              className="
+                                shrink-0
+                                rounded-full
+                                p-2
+                                transition
+                                hover:bg-gray-100
+                              "
+                            >
+
+                              <Heart
+                                size={18}
+
+                                className="
+                                  fill-red-500
+                                  text-red-500
+                                "
+                              />
+
+                            </button>
+
+                          </div>
+
+                        )
+                      )}
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              )}
+
+            </div>
 
 
             {/* CART */}
@@ -846,7 +1245,9 @@ const Navbar = () => {
               : "Open navigation menu"
           }
 
-          aria-expanded={isMenuOpen}
+          aria-expanded={
+            isMenuOpen
+          }
         >
 
           {isMenuOpen ? (
@@ -946,9 +1347,7 @@ const Navbar = () => {
         </div>
 
 
-        {/* ==================================================
-            SEARCH RESULTS
-            ================================================== */}
+        {/* SEARCH RESULTS */}
 
         {isSearchOpen && searchQuery && (
 
@@ -971,66 +1370,131 @@ const Navbar = () => {
                 "
               >
 
-                {filteredProducts.map((product) => (
+                {filteredProducts.map(
+                  (product) => (
 
-                  <a
-                    key={product.id}
-
-                    href="#"
-
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      rounded-lg
-                      border
-                      p-3
-                      transition
-                      hover:bg-gray-50
-                    "
-                  >
-
-                    <img
-                      src={product.image}
-                      alt={product.name}
+                    <div
+                      key={product.id}
 
                       className="
-                        h-14
-                        w-14
-                        shrink-0
+                        flex
+                        items-center
+                        gap-3
                         rounded-lg
-                        object-cover
+                        border
+                        p-3
+                        transition
+                        hover:bg-gray-50
                       "
-                    />
+                    >
 
+                      <a
+                        href="#"
 
-                    <div>
-
-                      <h3
                         className="
-                          text-sm
-                          font-medium
-                          text-gray-900
+                          flex
+                          min-w-0
+                          flex-1
+                          items-center
+                          gap-3
                         "
                       >
-                        {product.name}
-                      </h3>
+
+                        <img
+                          src={product.image}
+                          alt={product.name}
+
+                          className="
+                            h-14
+                            w-14
+                            shrink-0
+                            rounded-lg
+                            object-cover
+                          "
+                        />
 
 
-                      <p
+                        <div
+                          className="
+                            min-w-0
+                          "
+                        >
+
+                          <h3
+                            className="
+                              truncate
+                              text-sm
+                              font-medium
+                              text-gray-900
+                            "
+                          >
+                            {product.name}
+                          </h3>
+
+
+                          <p
+                            className="
+                              text-xs
+                              text-gray-500
+                            "
+                          >
+                            {product.category}
+                          </p>
+
+                        </div>
+
+                      </a>
+
+
+                      {/* SEARCH RESULT WISHLIST */}
+
+                      <button
+                        type="button"
+
+                        onClick={() =>
+                          toggleWishlist(
+                            product
+                          )
+                        }
+
+                        aria-label={
+                          isInWishlist(
+                            product.id
+                          )
+                            ? "Remove from wishlist"
+                            : "Add to wishlist"
+                        }
+
                         className="
-                          text-xs
-                          text-gray-500
+                          shrink-0
+                          rounded-full
+                          p-2
+                          transition
+                          hover:bg-gray-100
+                          focus:outline-none
+                          focus:ring-2
+                          focus:ring-gray-300
                         "
                       >
-                        {product.category}
-                      </p>
+
+                        <Heart
+                          size={19}
+
+                          className={
+                            isInWishlist(
+                              product.id
+                            )
+                              ? "fill-red-500 text-red-500"
+                              : "text-gray-600"
+                          }
+                        />
+
+                      </button>
 
                     </div>
 
-                  </a>
-
-                ))}
+                  )
+                )}
 
               </div>
 
@@ -1112,7 +1576,9 @@ const Navbar = () => {
               <button
                 type="button"
 
-                onClick={toggleMobileCollections}
+                onClick={
+                  toggleMobileCollections
+                }
 
                 className="
                   flex
@@ -1167,66 +1633,79 @@ const Navbar = () => {
                   "
                 >
 
-                  {collections.map((collection) => (
+                  {collections.map(
+                    (collection) => (
 
-                    <a
-                      key={collection.title}
+                      <a
+                        key={
+                          collection.title
+                        }
 
-                      href="#"
-
-                      className="
-                        group
-                        flex
-                        items-center
-                        gap-3
-                        rounded-lg
-                        p-2
-                        transition
-                        hover:bg-gray-100
-                      "
-                    >
-
-                      <img
-                        src={collection.image}
-                        alt={collection.title}
+                        href="#"
 
                         className="
-                          h-12
-                          w-12
-                          shrink-0
+                          group
+                          flex
+                          items-center
+                          gap-3
                           rounded-lg
-                          object-cover
+                          p-2
+                          transition
+                          hover:bg-gray-100
                         "
-                      />
+                      >
 
+                        <img
+                          src={
+                            collection.image
+                          }
 
-                      <div>
+                          alt={
+                            collection.title
+                          }
 
-                        <h3
                           className="
-                            text-sm
-                            font-medium
-                            text-gray-800
+                            h-12
+                            w-12
+                            shrink-0
+                            rounded-lg
+                            object-cover
                           "
-                        >
-                          {collection.title}
-                        </h3>
+                        />
 
 
-                        <p
-                          className="
-                            text-xs
-                            text-gray-500
-                          "
-                        >
-                          {collection.description}
-                        </p>
+                        <div>
 
-                      </div>
+                          <h3
+                            className="
+                              text-sm
+                              font-medium
+                              text-gray-800
+                            "
+                          >
+                            {
+                              collection.title
+                            }
+                          </h3>
 
-                    </a>
 
-                  ))}
+                          <p
+                            className="
+                              text-xs
+                              text-gray-500
+                            "
+                          >
+                            {
+                              collection.description
+                            }
+                          </p>
+
+                        </div>
+
+                      </a>
+
+                    )
+                  )}
 
                 </div>
 
@@ -1294,7 +1773,6 @@ const Navbar = () => {
                 pt-2
               "
             >
-
 
               {/* SEARCH */}
 
@@ -1396,8 +1874,8 @@ const Navbar = () => {
                       text-gray-500
                     "
                   >
-                    Sign in to your account to view
-                    your orders and profile.
+                    Sign in to your account to
+                    view your orders and profile.
                   </p>
 
 
@@ -1442,10 +1920,12 @@ const Navbar = () => {
               )}
 
 
-              {/* WISHLIST */}
+              {/* MOBILE WISHLIST */}
 
               <button
                 type="button"
+
+                onClick={toggleWishlistPanel}
 
                 className="
                   flex
@@ -1464,13 +1944,210 @@ const Navbar = () => {
                 "
               >
 
-                <Heart size={19} />
+                <div className="relative">
+
+                  <Heart
+                    size={19}
+
+                    className={
+                      wishlist.length > 0
+                        ? "fill-red-500 text-red-500"
+                        : ""
+                    }
+                  />
+
+
+                  {wishlist.length > 0 && (
+
+                    <span
+                      className="
+                        absolute
+                        -right-2
+                        -top-2
+                        flex
+                        h-4
+                        min-w-4
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-black
+                        px-1
+                        text-[9px]
+                        font-semibold
+                        text-white
+                      "
+                    >
+                      {wishlist.length}
+                    </span>
+
+                  )}
+
+                </div>
+
 
                 <span>
                   Wishlist
                 </span>
 
               </button>
+
+
+              {/* MOBILE WISHLIST PANEL */}
+
+              {isWishlistOpen && (
+
+                <div
+                  className="
+                    mx-4
+                    mb-2
+                    rounded-xl
+                    border
+                    bg-gray-50
+                    p-3
+                  "
+                >
+
+                  {wishlist.length === 0 ? (
+
+                    <div
+                      className="
+                        py-5
+                        text-center
+                      "
+                    >
+
+                      <Heart
+                        size={28}
+
+                        className="
+                          mx-auto
+                          text-gray-300
+                        "
+                      />
+
+
+                      <p
+                        className="
+                          mt-2
+                          text-xs
+                          text-gray-500
+                        "
+                      >
+                        Your wishlist is empty.
+                      </p>
+
+                    </div>
+
+                  ) : (
+
+                    <div className="space-y-2">
+
+                      {wishlist.map(
+                        (product) => (
+
+                          <div
+                            key={product.id}
+
+                            className="
+                              flex
+                              items-center
+                              gap-3
+                              rounded-lg
+                              bg-white
+                              p-2
+                            "
+                          >
+
+                            <img
+                              src={
+                                product.image
+                              }
+
+                              alt={
+                                product.name
+                              }
+
+                              className="
+                                h-12
+                                w-12
+                                shrink-0
+                                rounded-lg
+                                object-cover
+                              "
+                            />
+
+
+                            <div
+                              className="
+                                min-w-0
+                                flex-1
+                              "
+                            >
+
+                              <h3
+                                className="
+                                  truncate
+                                  text-xs
+                                  font-medium
+                                  text-gray-900
+                                "
+                              >
+                                {product.name}
+                              </h3>
+
+
+                              <p
+                                className="
+                                  text-[11px]
+                                  text-gray-500
+                                "
+                              >
+                                {product.category}
+                              </p>
+
+                            </div>
+
+
+                            <button
+                              type="button"
+
+                              onClick={() =>
+                                toggleWishlist(
+                                  product
+                                )
+                              }
+
+                              className="
+                                shrink-0
+                                rounded-full
+                                p-1.5
+                                hover:bg-gray-100
+                              "
+                            >
+
+                              <Heart
+                                size={16}
+
+                                className="
+                                  fill-red-500
+                                  text-red-500
+                                "
+                              />
+
+                            </button>
+
+                          </div>
+
+                        )
+                      )}
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              )}
 
 
               {/* CART */}
