@@ -1,4 +1,3 @@
-
 import React, {
   useEffect,
   useRef,
@@ -97,6 +96,21 @@ const Navbar = () => {
 
   /*
   ========================================================
+  SEARCH STATE
+  ========================================================
+
+  isSearchOpen = controls whether search bar is visible.
+
+  searchQuery = stores whatever the user types.
+  */
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+
+  /*
+  ========================================================
   DESKTOP COLLECTIONS REF
   ========================================================
   */
@@ -108,10 +122,6 @@ const Navbar = () => {
   ========================================================
   CLOSE DESKTOP COLLECTIONS WHEN CLICKING OUTSIDE
   ========================================================
-
-  This only controls the DESKTOP collections menu.
-
-  The mobile menu has its own separate state.
   */
 
   useEffect(() => {
@@ -185,6 +195,34 @@ const Navbar = () => {
   const toggleMobileCollections = () => {
 
     setIsMobileCollectionsOpen((prev) => !prev);
+
+  };
+
+
+  /*
+  ========================================================
+  TOGGLE SEARCH
+  ========================================================
+  */
+
+  const toggleSearch = () => {
+
+    setIsSearchOpen((prev) => !prev);
+
+  };
+
+
+  /*
+  ========================================================
+  CLOSE SEARCH
+  ========================================================
+  */
+
+  const closeSearch = () => {
+
+    setIsSearchOpen(false);
+
+    setSearchQuery("");
 
   };
 
@@ -475,10 +513,13 @@ const Navbar = () => {
             "
           >
 
+
             {/* SEARCH */}
 
             <button
               type="button"
+
+              onClick={toggleSearch}
 
               aria-label="Search"
 
@@ -652,6 +693,117 @@ const Navbar = () => {
 
 
       {/* ==================================================
+          SEARCH BAR
+          ================================================== */}
+
+      <div
+        className={`
+          overflow-hidden
+          border-t
+          bg-white
+
+          transition-all
+          duration-300
+
+          ${
+            isSearchOpen
+              ? "max-h-24 opacity-100"
+              : "max-h-0 opacity-0"
+          }
+        `}
+      >
+
+        <div
+          className="
+            mx-auto
+
+            flex
+            max-w-7xl
+            items-center
+            gap-3
+
+            px-6
+            py-4
+          "
+        >
+
+          {/* SEARCH ICON */}
+
+          <Search
+            size={20}
+
+            className="
+              shrink-0
+              text-gray-500
+            "
+          />
+
+
+          {/* SEARCH INPUT */}
+
+          <input
+            type="text"
+
+            value={searchQuery}
+
+            onChange={(e) =>
+              setSearchQuery(e.target.value)
+            }
+
+            placeholder="Search jewellery..."
+
+            className="
+              w-full
+
+              border-none
+
+              bg-transparent
+
+              text-sm
+              text-gray-900
+
+              outline-none
+
+              placeholder:text-gray-400
+            "
+          />
+
+
+          {/* CLOSE SEARCH */}
+
+          <button
+            type="button"
+
+            onClick={closeSearch}
+
+            aria-label="Close search"
+
+            className="
+              rounded-full
+
+              p-2
+
+              text-gray-500
+
+              transition
+
+              hover:bg-gray-100
+              hover:text-black
+
+              focus:outline-none
+            "
+          >
+
+            <X size={18} />
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      {/* ==================================================
           MOBILE NAVIGATION
           ================================================== */}
 
@@ -666,7 +818,9 @@ const Navbar = () => {
         <div
           className="
             mx-auto
+
             max-w-7xl
+
             px-6
             py-4
           "
@@ -714,9 +868,7 @@ const Navbar = () => {
             <div className="w-full">
 
 
-              {/* ==================================================
-                  COLLECTIONS BUTTON
-                  ================================================== */}
+              {/* COLLECTIONS BUTTON */}
 
               <button
                 type="button"
@@ -942,22 +1094,25 @@ const Navbar = () => {
             <div
               className="
                 mt-2
+
                 border-t
+
                 pt-2
               "
             >
 
 
-              {/* ==================================================
-                  SEARCH
-                  ================================================== */}
+              {/* SEARCH */}
 
               <button
                 type="button"
 
+                onClick={toggleSearch}
+
                 className="
                   flex
                   w-full
+
                   items-center
                   gap-3
 
@@ -987,9 +1142,7 @@ const Navbar = () => {
               </button>
 
 
-              {/* ==================================================
-                  ACCOUNT
-                  ================================================== */}
+              {/* ACCOUNT */}
 
               <button
                 type="button"
@@ -997,6 +1150,7 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
+
                   items-center
                   gap-3
 
@@ -1026,9 +1180,7 @@ const Navbar = () => {
               </button>
 
 
-              {/* ==================================================
-                  WISHLIST
-                  ================================================== */}
+              {/* WISHLIST */}
 
               <button
                 type="button"
@@ -1036,6 +1188,7 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
+
                   items-center
                   gap-3
 
@@ -1065,9 +1218,7 @@ const Navbar = () => {
               </button>
 
 
-              {/* ==================================================
-                  CART
-                  ================================================== */}
+              {/* CART */}
 
               <button
                 type="button"
@@ -1075,6 +1226,7 @@ const Navbar = () => {
                 className="
                   flex
                   w-full
+
                   items-center
                   gap-3
 
