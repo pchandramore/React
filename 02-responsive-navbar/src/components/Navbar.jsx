@@ -65,6 +65,7 @@ const Navbar = () => {
       id: 1,
       name: "Classic Gold Necklace",
       category: "Gold Jewellery",
+      price: 2500,
       image: "/jewellery/gold.jpg",
     },
 
@@ -72,6 +73,7 @@ const Navbar = () => {
       id: 2,
       name: "Diamond Earrings",
       category: "Diamond Jewellery",
+      price: 4200,
       image: "/jewellery/diamond.jpg",
     },
 
@@ -79,6 +81,7 @@ const Navbar = () => {
       id: 3,
       name: "Bridal Gold Set",
       category: "Bridal Jewellery",
+      price: 8500,
       image: "/jewellery/bridal.jpg",
     },
 
@@ -86,6 +89,7 @@ const Navbar = () => {
       id: 4,
       name: "Gold Hoop Earrings",
       category: "Earrings",
+      price: 1800,
       image: "/jewellery/earrings.jpg",
     },
   ];
@@ -153,6 +157,30 @@ const Navbar = () => {
   */
 
   const [wishlist, setWishlist] =
+    useState([]);
+
+
+  /*
+  ========================================================
+  CART STATE
+  ========================================================
+
+  cart will contain products that the customer
+  wants to purchase.
+
+  Example:
+
+  [
+    {
+      id: 1,
+      name: "Classic Gold Necklace",
+      price: 2500,
+      quantity: 1
+    }
+  ]
+  */
+
+  const [cart, setCart] =
     useState([]);
 
 
@@ -961,9 +989,7 @@ const Navbar = () => {
               </button>
 
 
-              {/* ==================================================
-                  WISHLIST PANEL
-                  ================================================== */}
+              {/* WISHLIST PANEL */}
 
               {isWishlistOpen && (
 
@@ -982,8 +1008,6 @@ const Navbar = () => {
                     shadow-2xl
                   "
                 >
-
-                  {/* HEADER */}
 
                   <div
                     className="
@@ -1021,8 +1045,6 @@ const Navbar = () => {
                   </div>
 
 
-                  {/* EMPTY WISHLIST */}
-
                   {wishlist.length === 0 ? (
 
                     <div
@@ -1034,7 +1056,6 @@ const Navbar = () => {
 
                       <Heart
                         size={32}
-
                         className="
                           mx-auto
                           text-gray-300
@@ -1055,10 +1076,6 @@ const Navbar = () => {
                     </div>
 
                   ) : (
-
-                    /* ==================================================
-                       WISHLIST PRODUCTS
-                       ================================================== */
 
                     <div
                       className="
@@ -1086,8 +1103,6 @@ const Navbar = () => {
                             "
                           >
 
-                            {/* PRODUCT IMAGE */}
-
                             <img
                               src={product.image}
                               alt={product.name}
@@ -1101,8 +1116,6 @@ const Navbar = () => {
                               "
                             />
 
-
-                            {/* PRODUCT DETAILS */}
 
                             <div
                               className="
@@ -1136,8 +1149,6 @@ const Navbar = () => {
                             </div>
 
 
-                            {/* REMOVE BUTTON */}
-
                             <button
                               type="button"
 
@@ -1145,11 +1156,6 @@ const Navbar = () => {
                                 toggleWishlist(
                                   product
                                 )
-                              }
-
-                              aria-label={
-                                `Remove ${product.name} ` +
-                                `from wishlist`
                               }
 
                               className="
@@ -1163,7 +1169,6 @@ const Navbar = () => {
 
                               <Heart
                                 size={18}
-
                                 className="
                                   fill-red-500
                                   text-red-500
@@ -1188,7 +1193,9 @@ const Navbar = () => {
             </div>
 
 
-            {/* CART */}
+            {/* ==================================================
+                CART ICON
+                ================================================== */}
 
             <button
               type="button"
@@ -1196,6 +1203,7 @@ const Navbar = () => {
               aria-label="Shopping cart"
 
               className="
+                relative
                 rounded-full
                 p-2
                 text-gray-700
@@ -1209,6 +1217,35 @@ const Navbar = () => {
             >
 
               <ShoppingBag size={19} />
+
+
+              {/* Cart count will be added
+                  in the next step */}
+
+              {cart.length > 0 && (
+
+                <span
+                  className="
+                    absolute
+                    -right-1
+                    -top-1
+                    flex
+                    h-5
+                    min-w-5
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black
+                    px-1
+                    text-[10px]
+                    font-semibold
+                    text-white
+                  "
+                >
+                  {cart.length}
+                </span>
+
+              )}
 
             </button>
 
@@ -1305,7 +1342,9 @@ const Navbar = () => {
             value={searchQuery}
 
             onChange={(e) =>
-              setSearchQuery(e.target.value)
+              setSearchQuery(
+                e.target.value
+              )
             }
 
             placeholder="Search jewellery..."
@@ -1441,12 +1480,25 @@ const Navbar = () => {
                             {product.category}
                           </p>
 
+
+                          <p
+                            className="
+                              mt-1
+                              text-sm
+                              font-semibold
+                              text-gray-900
+                            "
+                          >
+                            AED{" "}
+                            {product.price.toLocaleString()}
+                          </p>
+
                         </div>
 
                       </a>
 
 
-                      {/* SEARCH RESULT WISHLIST */}
+                      {/* WISHLIST */}
 
                       <button
                         type="button"
@@ -2040,7 +2092,11 @@ const Navbar = () => {
 
                   ) : (
 
-                    <div className="space-y-2">
+                    <div
+                      className="
+                        space-y-2
+                      "
+                    >
 
                       {wishlist.map(
                         (product) => (
@@ -2092,7 +2148,9 @@ const Navbar = () => {
                                   text-gray-900
                                 "
                               >
-                                {product.name}
+                                {
+                                  product.name
+                                }
                               </h3>
 
 
@@ -2102,7 +2160,9 @@ const Navbar = () => {
                                   text-gray-500
                                 "
                               >
-                                {product.category}
+                                {
+                                  product.category
+                                }
                               </p>
 
                             </div>
@@ -2150,12 +2210,13 @@ const Navbar = () => {
               )}
 
 
-              {/* CART */}
+              {/* MOBILE CART */}
 
               <button
                 type="button"
 
                 className="
+                  relative
                   flex
                   w-full
                   items-center
@@ -2177,6 +2238,30 @@ const Navbar = () => {
                 <span>
                   Cart
                 </span>
+
+
+                {cart.length > 0 && (
+
+                  <span
+                    className="
+                      ml-auto
+                      flex
+                      h-5
+                      min-w-5
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-black
+                      px-1
+                      text-[10px]
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    {cart.length}
+                  </span>
+
+                )}
 
               </button>
 
