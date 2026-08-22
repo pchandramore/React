@@ -56,7 +56,7 @@ const Navbar = () => {
 
   /*
   ========================================================
-  JEWELLERY PRODUCTS DATA
+  PRODUCTS DATA
   ========================================================
   */
 
@@ -107,7 +107,7 @@ const Navbar = () => {
 
   /*
   ========================================================
-  DESKTOP COLLECTIONS MENU STATE
+  DESKTOP COLLECTIONS STATE
   ========================================================
   */
 
@@ -117,7 +117,7 @@ const Navbar = () => {
 
   /*
   ========================================================
-  MOBILE COLLECTIONS MENU STATE
+  MOBILE COLLECTIONS STATE
   ========================================================
   */
 
@@ -162,30 +162,6 @@ const Navbar = () => {
 
   /*
   ========================================================
-  CART STATE
-  ========================================================
-
-  cart will contain products that the customer
-  wants to purchase.
-
-  Example:
-
-  [
-    {
-      id: 1,
-      name: "Classic Gold Necklace",
-      price: 2500,
-      quantity: 1
-    }
-  ]
-  */
-
-  const [cart, setCart] =
-    useState([]);
-
-
-  /*
-  ========================================================
   WISHLIST PANEL STATE
   ========================================================
   */
@@ -196,31 +172,40 @@ const Navbar = () => {
 
   /*
   ========================================================
-  DESKTOP COLLECTIONS REF
+  CART STATE
+  ========================================================
+  */
+
+  const [cart, setCart] =
+    useState([]);
+
+
+  /*
+  ========================================================
+  CART PANEL STATE
+  ========================================================
+  */
+
+  const [isCartOpen, setIsCartOpen] =
+    useState(false);
+
+
+  /*
+  ========================================================
+  REFS
   ========================================================
   */
 
   const desktopCollectionsRef =
     useRef(null);
 
-
-  /*
-  ========================================================
-  ACCOUNT REF
-  ========================================================
-  */
-
   const accountRef =
     useRef(null);
 
-
-  /*
-  ========================================================
-  WISHLIST REF
-  ========================================================
-  */
-
   const wishlistRef =
+    useRef(null);
+
+  const cartRef =
     useRef(null);
 
 
@@ -235,7 +220,7 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
 
       /*
-      Close Collections
+      DESKTOP COLLECTIONS
       */
 
       if (
@@ -251,7 +236,7 @@ const Navbar = () => {
 
 
       /*
-      Close Account
+      ACCOUNT
       */
 
       if (
@@ -267,7 +252,7 @@ const Navbar = () => {
 
 
       /*
-      Close Wishlist
+      WISHLIST
       */
 
       if (
@@ -278,6 +263,22 @@ const Navbar = () => {
       ) {
 
         setIsWishlistOpen(false);
+
+      }
+
+
+      /*
+      CART
+      */
+
+      if (
+        cartRef.current &&
+        !cartRef.current.contains(
+          event.target
+        )
+      ) {
+
+        setIsCartOpen(false);
 
       }
 
@@ -361,6 +362,7 @@ const Navbar = () => {
 
     setIsAccountOpen(false);
     setIsWishlistOpen(false);
+    setIsCartOpen(false);
 
   };
 
@@ -376,8 +378,6 @@ const Navbar = () => {
     setIsMobileCollectionsOpen(
       (prev) => !prev
     );
-
-    setIsAccountOpen(false);
 
   };
 
@@ -396,6 +396,7 @@ const Navbar = () => {
 
     setIsAccountOpen(false);
     setIsWishlistOpen(false);
+    setIsCartOpen(false);
 
   };
 
@@ -429,6 +430,7 @@ const Navbar = () => {
 
     setIsCollectionsOpen(false);
     setIsWishlistOpen(false);
+    setIsCartOpen(false);
 
   };
 
@@ -447,8 +449,194 @@ const Navbar = () => {
 
     setIsAccountOpen(false);
     setIsCollectionsOpen(false);
+    setIsCartOpen(false);
 
   };
+
+
+  /*
+  ========================================================
+  TOGGLE CART PANEL
+  ========================================================
+  */
+
+  const toggleCart = () => {
+
+    setIsCartOpen(
+      (prev) => !prev
+    );
+
+    setIsAccountOpen(false);
+    setIsCollectionsOpen(false);
+    setIsWishlistOpen(false);
+
+  };
+
+
+  /*
+  ========================================================
+  ADD PRODUCT TO CART
+  ========================================================
+  */
+
+  const addToCart = (product) => {
+
+    setCart((prevCart) => {
+
+      const existingProduct =
+        prevCart.find(
+          (item) =>
+            item.id === product.id
+        );
+
+
+      /*
+      PRODUCT ALREADY EXISTS
+      */
+
+      if (existingProduct) {
+
+        return prevCart.map(
+          (item) =>
+            item.id === product.id
+              ? {
+                  ...item,
+                  quantity:
+                    item.quantity + 1,
+                }
+              : item
+        );
+
+      }
+
+
+      /*
+      NEW PRODUCT
+      */
+
+      return [
+        ...prevCart,
+
+        {
+          ...product,
+          quantity: 1,
+        },
+      ];
+
+    });
+
+  };
+
+
+  /*
+  ========================================================
+  REMOVE PRODUCT FROM CART
+  ========================================================
+  */
+
+  const removeFromCart = (productId) => {
+
+    setCart((prevCart) =>
+      prevCart.filter(
+        (item) =>
+          item.id !== productId
+      )
+    );
+
+  };
+
+
+  /*
+  ========================================================
+  INCREASE CART QUANTITY
+  ========================================================
+  */
+
+  const increaseQuantity = (productId) => {
+
+    setCart((prevCart) =>
+
+      prevCart.map((item) =>
+
+        item.id === productId
+
+          ? {
+              ...item,
+              quantity:
+                item.quantity + 1,
+            }
+
+          : item
+
+      )
+
+    );
+
+  };
+
+
+  /*
+  ========================================================
+  DECREASE CART QUANTITY
+  ========================================================
+  */
+
+  const decreaseQuantity = (productId) => {
+
+    setCart((prevCart) =>
+
+      prevCart
+        .map((item) =>
+
+          item.id === productId
+
+            ? {
+                ...item,
+                quantity:
+                  item.quantity - 1,
+              }
+
+            : item
+
+        )
+        .filter(
+          (item) =>
+            item.quantity > 0
+        )
+
+    );
+
+  };
+
+
+  /*
+  ========================================================
+  TOTAL CART QUANTITY
+  ========================================================
+  */
+
+  const cartQuantity =
+    cart.reduce(
+      (total, item) =>
+        total + item.quantity,
+      0
+    );
+
+
+  /*
+  ========================================================
+  TOTAL CART PRICE
+  ========================================================
+  */
+
+  const cartTotal =
+    cart.reduce(
+      (total, item) =>
+        total +
+        item.price *
+          item.quantity,
+      0
+    );
 
 
   /*
@@ -469,7 +657,7 @@ const Navbar = () => {
 
 
       /*
-      REMOVE PRODUCT
+      REMOVE
       */
 
       if (isAlreadyInWishlist) {
@@ -483,7 +671,7 @@ const Navbar = () => {
 
 
       /*
-      ADD PRODUCT
+      ADD
       */
 
       return [
@@ -498,7 +686,7 @@ const Navbar = () => {
 
   /*
   ========================================================
-  CHECK WHETHER PRODUCT IS IN WISHLIST
+  CHECK WISHLIST
   ========================================================
   */
 
@@ -585,7 +773,7 @@ const Navbar = () => {
 
 
           {/* ==================================================
-              DESKTOP COLLECTIONS
+              COLLECTIONS
               ================================================== */}
 
           <div
@@ -596,7 +784,9 @@ const Navbar = () => {
             <button
               type="button"
 
-              onClick={toggleCollections}
+              onClick={
+                toggleCollections
+              }
 
               className="
                 flex
@@ -648,7 +838,10 @@ const Navbar = () => {
                   (collection) => (
 
                     <a
-                      key={collection.title}
+                      key={
+                        collection.title
+                      }
+
                       href="#"
 
                       className="
@@ -663,8 +856,13 @@ const Navbar = () => {
                     >
 
                       <img
-                        src={collection.image}
-                        alt={collection.title}
+                        src={
+                          collection.image
+                        }
+
+                        alt={
+                          collection.title
+                        }
 
                         className="
                           h-20
@@ -688,7 +886,9 @@ const Navbar = () => {
                             text-gray-900
                           "
                         >
-                          {collection.title}
+                          {
+                            collection.title
+                          }
                         </h3>
 
 
@@ -700,7 +900,9 @@ const Navbar = () => {
                             text-gray-500
                           "
                         >
-                          {collection.description}
+                          {
+                            collection.description
+                          }
                         </p>
 
                       </div>
@@ -773,8 +975,6 @@ const Navbar = () => {
 
               onClick={toggleSearch}
 
-              aria-label="Search"
-
               className="
                 rounded-full
                 p-2
@@ -782,9 +982,6 @@ const Navbar = () => {
                 transition
                 hover:bg-gray-100
                 hover:text-black
-                focus:outline-none
-                focus:ring-2
-                focus:ring-gray-300
               "
             >
 
@@ -805,12 +1002,6 @@ const Navbar = () => {
 
                 onClick={toggleAccount}
 
-                aria-label="Account"
-
-                aria-expanded={
-                  isAccountOpen
-                }
-
                 className="
                   rounded-full
                   p-2
@@ -818,9 +1009,6 @@ const Navbar = () => {
                   transition
                   hover:bg-gray-100
                   hover:text-black
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-gray-300
                 "
               >
 
@@ -828,8 +1016,6 @@ const Navbar = () => {
 
               </button>
 
-
-              {/* ACCOUNT DROPDOWN */}
 
               {isAccountOpen && (
 
@@ -886,27 +1072,10 @@ const Navbar = () => {
                       text-sm
                       font-medium
                       text-white
-                      transition
                       hover:bg-gray-800
                     "
                   >
                     Sign In
-                  </button>
-
-
-                  <button
-                    type="button"
-
-                    className="
-                      mt-3
-                      w-full
-                      text-sm
-                      font-medium
-                      text-gray-700
-                      hover:text-black
-                    "
-                  >
-                    Create an account
                   </button>
 
                 </div>
@@ -928,12 +1097,8 @@ const Navbar = () => {
               <button
                 type="button"
 
-                onClick={toggleWishlistPanel}
-
-                aria-label="Wishlist"
-
-                aria-expanded={
-                  isWishlistOpen
+                onClick={
+                  toggleWishlistPanel
                 }
 
                 className="
@@ -944,9 +1109,6 @@ const Navbar = () => {
                   transition
                   hover:bg-gray-100
                   hover:text-black
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-gray-300
                 "
               >
 
@@ -1009,71 +1171,31 @@ const Navbar = () => {
                   "
                 >
 
-                  <div
+                  <h2
                     className="
-                      flex
-                      items-center
-                      justify-between
                       border-b
                       pb-3
+                      text-base
+                      font-semibold
+                      text-gray-900
                     "
                   >
-
-                    <h2
-                      className="
-                        text-base
-                        font-semibold
-                        text-gray-900
-                      "
-                    >
-                      My Wishlist
-                    </h2>
-
-
-                    <span
-                      className="
-                        text-xs
-                        text-gray-500
-                      "
-                    >
-                      {wishlist.length} item
-                      {wishlist.length !== 1
-                        ? "s"
-                        : ""}
-                    </span>
-
-                  </div>
+                    My Wishlist
+                  </h2>
 
 
                   {wishlist.length === 0 ? (
 
-                    <div
+                    <p
                       className="
                         py-8
                         text-center
+                        text-sm
+                        text-gray-500
                       "
                     >
-
-                      <Heart
-                        size={32}
-                        className="
-                          mx-auto
-                          text-gray-300
-                        "
-                      />
-
-
-                      <p
-                        className="
-                          mt-3
-                          text-sm
-                          text-gray-500
-                        "
-                      >
-                        Your wishlist is empty.
-                      </p>
-
-                    </div>
+                      Your wishlist is empty.
+                    </p>
 
                   ) : (
 
@@ -1098,19 +1220,22 @@ const Navbar = () => {
                               gap-3
                               rounded-lg
                               p-2
-                              transition
                               hover:bg-gray-50
                             "
                           >
 
                             <img
-                              src={product.image}
-                              alt={product.name}
+                              src={
+                                product.image
+                              }
+
+                              alt={
+                                product.name
+                              }
 
                               className="
                                 h-14
                                 w-14
-                                shrink-0
                                 rounded-lg
                                 object-cover
                               "
@@ -1132,18 +1257,22 @@ const Navbar = () => {
                                   text-gray-900
                                 "
                               >
-                                {product.name}
+                                {
+                                  product.name
+                                }
                               </h3>
 
 
                               <p
                                 className="
-                                  mt-1
                                   text-xs
                                   text-gray-500
                                 "
                               >
-                                {product.category}
+                                AED{" "}
+                                {
+                                  product.price.toLocaleString()
+                                }
                               </p>
 
                             </div>
@@ -1159,10 +1288,8 @@ const Navbar = () => {
                               }
 
                               className="
-                                shrink-0
                                 rounded-full
                                 p-2
-                                transition
                                 hover:bg-gray-100
                               "
                             >
@@ -1194,60 +1321,418 @@ const Navbar = () => {
 
 
             {/* ==================================================
-                CART ICON
+                CART
                 ================================================== */}
 
-            <button
-              type="button"
-
-              aria-label="Shopping cart"
-
-              className="
-                relative
-                rounded-full
-                p-2
-                text-gray-700
-                transition
-                hover:bg-gray-100
-                hover:text-black
-                focus:outline-none
-                focus:ring-2
-                focus:ring-gray-300
-              "
+            <div
+              ref={cartRef}
+              className="relative"
             >
 
-              <ShoppingBag size={19} />
+              <button
+                type="button"
+
+                onClick={toggleCart}
+
+                className="
+                  relative
+                  rounded-full
+                  p-2
+                  text-gray-700
+                  transition
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <ShoppingBag size={19} />
 
 
-              {/* Cart count will be added
-                  in the next step */}
+                {cartQuantity > 0 && (
 
-              {cart.length > 0 && (
+                  <span
+                    className="
+                      absolute
+                      -right-1
+                      -top-1
+                      flex
+                      h-5
+                      min-w-5
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-black
+                      px-1
+                      text-[10px]
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    {cartQuantity}
+                  </span>
 
-                <span
+                )}
+
+              </button>
+
+
+              {/* ==================================================
+                  CART DROPDOWN
+                  ================================================== */}
+
+              {isCartOpen && (
+
+                <div
                   className="
                     absolute
-                    -right-1
-                    -top-1
-                    flex
-                    h-5
-                    min-w-5
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-black
-                    px-1
-                    text-[10px]
-                    font-semibold
-                    text-white
+                    right-0
+                    top-full
+                    z-50
+                    mt-3
+                    w-80
+                    rounded-2xl
+                    border
+                    bg-white
+                    p-4
+                    shadow-2xl
                   "
                 >
-                  {cart.length}
-                </span>
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      border-b
+                      pb-3
+                    "
+                  >
+
+                    <h2
+                      className="
+                        text-base
+                        font-semibold
+                        text-gray-900
+                      "
+                    >
+                      Shopping Cart
+                    </h2>
+
+
+                    <span
+                      className="
+                        text-xs
+                        text-gray-500
+                      "
+                    >
+                      {cartQuantity} item
+                      {cartQuantity !== 1
+                        ? "s"
+                        : ""}
+                    </span>
+
+                  </div>
+
+
+                  {cart.length === 0 ? (
+
+                    <div
+                      className="
+                        py-8
+                        text-center
+                      "
+                    >
+
+                      <ShoppingBag
+                        size={32}
+                        className="
+                          mx-auto
+                          text-gray-300
+                        "
+                      />
+
+
+                      <p
+                        className="
+                          mt-3
+                          text-sm
+                          text-gray-500
+                        "
+                      >
+                        Your cart is empty.
+                      </p>
+
+                    </div>
+
+                  ) : (
+
+                    <>
+
+                      <div
+                        className="
+                          mt-3
+                          max-h-80
+                          space-y-3
+                          overflow-y-auto
+                        "
+                      >
+
+                        {cart.map(
+                          (product) => (
+
+                            <div
+                              key={product.id}
+
+                              className="
+                                rounded-lg
+                                border
+                                p-2
+                              "
+                            >
+
+                              <div
+                                className="
+                                  flex
+                                  gap-3
+                                "
+                              >
+
+                                <img
+                                  src={
+                                    product.image
+                                  }
+
+                                  alt={
+                                    product.name
+                                  }
+
+                                  className="
+                                    h-16
+                                    w-16
+                                    shrink-0
+                                    rounded-lg
+                                    object-cover
+                                  "
+                                />
+
+
+                                <div
+                                  className="
+                                    min-w-0
+                                    flex-1
+                                  "
+                                >
+
+                                  <h3
+                                    className="
+                                      truncate
+                                      text-sm
+                                      font-medium
+                                      text-gray-900
+                                    "
+                                  >
+                                    {
+                                      product.name
+                                    }
+                                  </h3>
+
+
+                                  <p
+                                    className="
+                                      mt-1
+                                      text-xs
+                                      text-gray-500
+                                    "
+                                  >
+                                    AED{" "}
+                                    {
+                                      product.price.toLocaleString()
+                                    }
+                                  </p>
+
+
+                                  {/* QUANTITY CONTROLS */}
+
+                                  <div
+                                    className="
+                                      mt-2
+                                      flex
+                                      items-center
+                                      justify-between
+                                    "
+                                  >
+
+                                    <div
+                                      className="
+                                        flex
+                                        items-center
+                                        rounded-lg
+                                        border
+                                      "
+                                    >
+
+                                      <button
+                                        type="button"
+
+                                        onClick={() =>
+                                          decreaseQuantity(
+                                            product.id
+                                          )
+                                        }
+
+                                        className="
+                                          px-2
+                                          py-1
+                                          text-sm
+                                          hover:bg-gray-100
+                                        "
+                                      >
+                                        -
+                                      </button>
+
+
+                                      <span
+                                        className="
+                                          min-w-7
+                                          text-center
+                                          text-xs
+                                          font-medium
+                                        "
+                                      >
+                                        {
+                                          product.quantity
+                                        }
+                                      </span>
+
+
+                                      <button
+                                        type="button"
+
+                                        onClick={() =>
+                                          increaseQuantity(
+                                            product.id
+                                          )
+                                        }
+
+                                        className="
+                                          px-2
+                                          py-1
+                                          text-sm
+                                          hover:bg-gray-100
+                                        "
+                                      >
+                                        +
+                                      </button>
+
+                                    </div>
+
+
+                                    <button
+                                      type="button"
+
+                                      onClick={() =>
+                                        removeFromCart(
+                                          product.id
+                                        )
+                                      }
+
+                                      className="
+                                        text-xs
+                                        text-red-500
+                                        hover:text-red-700
+                                      "
+                                    >
+                                      Remove
+                                    </button>
+
+                                  </div>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                          )
+                        )}
+
+                      </div>
+
+
+                      {/* CART TOTAL */}
+
+                      <div
+                        className="
+                          mt-4
+                          border-t
+                          pt-4
+                        "
+                      >
+
+                        <div
+                          className="
+                            flex
+                            items-center
+                            justify-between
+                          "
+                        >
+
+                          <span
+                            className="
+                              text-sm
+                              font-medium
+                              text-gray-600
+                            "
+                          >
+                            Total
+                          </span>
+
+
+                          <span
+                            className="
+                              text-base
+                              font-semibold
+                              text-gray-900
+                            "
+                          >
+                            AED{" "}
+                            {cartTotal.toLocaleString()}
+                          </span>
+
+                        </div>
+
+
+                        <button
+                          type="button"
+
+                          className="
+                            mt-3
+                            w-full
+                            rounded-lg
+                            bg-black
+                            px-4
+                            py-3
+                            text-sm
+                            font-medium
+                            text-white
+                            transition
+                            hover:bg-gray-800
+                          "
+                        >
+                          Checkout
+                        </button>
+
+                      </div>
+
+                    </>
+
+                  )}
+
+                </div>
 
               )}
 
-            </button>
+            </div>
 
           </div>
 
@@ -1332,7 +1817,10 @@ const Navbar = () => {
 
           <Search
             size={20}
-            className="shrink-0 text-gray-500"
+            className="
+              shrink-0
+              text-gray-500
+            "
           />
 
 
@@ -1366,16 +1854,12 @@ const Navbar = () => {
 
             onClick={closeSearch}
 
-            aria-label="Close search"
-
             className="
               rounded-full
               p-2
               text-gray-500
-              transition
               hover:bg-gray-100
               hover:text-black
-              focus:outline-none
             "
           >
 
@@ -1388,60 +1872,52 @@ const Navbar = () => {
 
         {/* SEARCH RESULTS */}
 
-        {isSearchOpen && searchQuery && (
+        {isSearchOpen &&
+          searchQuery && (
 
-          <div
-            className="
-              mx-auto
-              max-w-7xl
-              px-6
-              pb-4
-            "
-          >
+            <div
+              className="
+                mx-auto
+                max-w-7xl
+                px-6
+                pb-4
+              "
+            >
 
-            {filteredProducts.length > 0 ? (
+              {filteredProducts.length > 0 ? (
 
-              <div
-                className="
-                  grid
-                  gap-3
-                  sm:grid-cols-2
-                "
-              >
+                <div
+                  className="
+                    grid
+                    gap-3
+                    sm:grid-cols-2
+                  "
+                >
 
-                {filteredProducts.map(
-                  (product) => (
+                  {filteredProducts.map(
+                    (product) => (
 
-                    <div
-                      key={product.id}
-
-                      className="
-                        flex
-                        items-center
-                        gap-3
-                        rounded-lg
-                        border
-                        p-3
-                        transition
-                        hover:bg-gray-50
-                      "
-                    >
-
-                      <a
-                        href="#"
+                      <div
+                        key={product.id}
 
                         className="
                           flex
-                          min-w-0
-                          flex-1
                           items-center
                           gap-3
+                          rounded-lg
+                          border
+                          p-3
                         "
                       >
 
                         <img
-                          src={product.image}
-                          alt={product.name}
+                          src={
+                            product.image
+                          }
+
+                          alt={
+                            product.name
+                          }
 
                           className="
                             h-14
@@ -1456,6 +1932,7 @@ const Navbar = () => {
                         <div
                           className="
                             min-w-0
+                            flex-1
                           "
                         >
 
@@ -1467,7 +1944,9 @@ const Navbar = () => {
                               text-gray-900
                             "
                           >
-                            {product.name}
+                            {
+                              product.name
+                            }
                           </h3>
 
 
@@ -1477,7 +1956,9 @@ const Navbar = () => {
                               text-gray-500
                             "
                           >
-                            {product.category}
+                            {
+                              product.category
+                            }
                           </p>
 
 
@@ -1490,83 +1971,99 @@ const Navbar = () => {
                             "
                           >
                             AED{" "}
-                            {product.price.toLocaleString()}
+                            {
+                              product.price.toLocaleString()
+                            }
                           </p>
 
                         </div>
 
-                      </a>
 
+                        {/* ADD TO CART */}
 
-                      {/* WISHLIST */}
+                        <button
+                          type="button"
 
-                      <button
-                        type="button"
-
-                        onClick={() =>
-                          toggleWishlist(
-                            product
-                          )
-                        }
-
-                        aria-label={
-                          isInWishlist(
-                            product.id
-                          )
-                            ? "Remove from wishlist"
-                            : "Add to wishlist"
-                        }
-
-                        className="
-                          shrink-0
-                          rounded-full
-                          p-2
-                          transition
-                          hover:bg-gray-100
-                          focus:outline-none
-                          focus:ring-2
-                          focus:ring-gray-300
-                        "
-                      >
-
-                        <Heart
-                          size={19}
-
-                          className={
-                            isInWishlist(
-                              product.id
+                          onClick={() =>
+                            addToCart(
+                              product
                             )
-                              ? "fill-red-500 text-red-500"
-                              : "text-gray-600"
                           }
-                        />
 
-                      </button>
+                          className="
+                            shrink-0
+                            rounded-lg
+                            bg-black
+                            px-3
+                            py-2
+                            text-xs
+                            font-medium
+                            text-white
+                            transition
+                            hover:bg-gray-800
+                          "
+                        >
+                          Add to Cart
+                        </button>
 
-                    </div>
 
-                  )
-                )}
+                        {/* WISHLIST */}
 
-              </div>
+                        <button
+                          type="button"
 
-            ) : (
+                          onClick={() =>
+                            toggleWishlist(
+                              product
+                            )
+                          }
 
-              <p
-                className="
-                  py-2
-                  text-sm
-                  text-gray-500
-                "
-              >
-                No jewellery found.
-              </p>
+                          className="
+                            shrink-0
+                            rounded-full
+                            p-2
+                            hover:bg-gray-100
+                          "
+                        >
 
-            )}
+                          <Heart
+                            size={19}
 
-          </div>
+                            className={
+                              isInWishlist(
+                                product.id
+                              )
+                                ? "fill-red-500 text-red-500"
+                                : "text-gray-600"
+                            }
+                          />
 
-        )}
+                        </button>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              ) : (
+
+                <p
+                  className="
+                    py-2
+                    text-sm
+                    text-gray-500
+                  "
+                >
+                  No jewellery found.
+                </p>
+
+              )}
+
+            </div>
+
+          )}
 
       </div>
 
@@ -1578,8 +2075,8 @@ const Navbar = () => {
       <div
         className={
           isMenuOpen
-            ? "max-h-[900px] overflow-hidden border-t bg-white opacity-100 transition-all duration-300 ease-in-out md:hidden"
-            : "max-h-0 overflow-hidden border-t bg-white opacity-0 transition-all duration-300 ease-in-out md:hidden"
+            ? "max-h-[1000px] overflow-hidden border-t bg-white opacity-100 transition-all duration-300 md:hidden"
+            : "max-h-0 overflow-hidden border-t bg-white opacity-0 transition-all duration-300 md:hidden"
         }
       >
 
@@ -1610,7 +2107,6 @@ const Navbar = () => {
                 text-sm
                 font-medium
                 text-gray-700
-                transition
                 hover:bg-gray-100
                 hover:text-black
               "
@@ -1643,7 +2139,6 @@ const Navbar = () => {
                   text-sm
                   font-medium
                   text-gray-700
-                  transition
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1702,7 +2197,6 @@ const Navbar = () => {
                           gap-3
                           rounded-lg
                           p-2
-                          transition
                           hover:bg-gray-100
                         "
                       >
@@ -1781,7 +2275,6 @@ const Navbar = () => {
                 text-sm
                 font-medium
                 text-gray-700
-                transition
                 hover:bg-gray-100
                 hover:text-black
               "
@@ -1805,7 +2298,6 @@ const Navbar = () => {
                 text-sm
                 font-medium
                 text-gray-700
-                transition
                 hover:bg-gray-100
                 hover:text-black
               "
@@ -1815,7 +2307,7 @@ const Navbar = () => {
 
 
             {/* ==================================================
-                MOBILE UTILITY MENU
+                MOBILE UTILITIES
                 ================================================== */}
 
             <div
@@ -1844,7 +2336,6 @@ const Navbar = () => {
                   text-sm
                   font-medium
                   text-gray-700
-                  transition
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1877,7 +2368,6 @@ const Navbar = () => {
                   text-sm
                   font-medium
                   text-gray-700
-                  transition
                   hover:bg-gray-100
                   hover:text-black
                 "
@@ -1891,8 +2381,6 @@ const Navbar = () => {
 
               </button>
 
-
-              {/* MOBILE ACCOUNT PANEL */}
 
               {isAccountOpen && (
 
@@ -1922,7 +2410,6 @@ const Navbar = () => {
                     className="
                       mt-1
                       text-xs
-                      leading-5
                       text-gray-500
                     "
                   >
@@ -1944,40 +2431,24 @@ const Navbar = () => {
                       text-sm
                       font-medium
                       text-white
-                      transition
-                      hover:bg-gray-800
                     "
                   >
                     Sign In
                   </button>
 
-
-                  <button
-                    type="button"
-
-                    className="
-                      mt-2
-                      w-full
-                      text-xs
-                      font-medium
-                      text-gray-700
-                      hover:text-black
-                    "
-                  >
-                    Create an account
-                  </button>
-
                 </div>
 
               )}
 
 
-              {/* MOBILE WISHLIST */}
+              {/* WISHLIST */}
 
               <button
                 type="button"
 
-                onClick={toggleWishlistPanel}
+                onClick={
+                  toggleWishlistPanel
+                }
 
                 className="
                   flex
@@ -1990,257 +2461,27 @@ const Navbar = () => {
                   text-sm
                   font-medium
                   text-gray-700
-                  transition
                   hover:bg-gray-100
                   hover:text-black
                 "
               >
 
-                <div className="relative">
+                <Heart
+                  size={19}
 
-                  <Heart
-                    size={19}
-
-                    className={
-                      wishlist.length > 0
-                        ? "fill-red-500 text-red-500"
-                        : ""
-                    }
-                  />
-
-
-                  {wishlist.length > 0 && (
-
-                    <span
-                      className="
-                        absolute
-                        -right-2
-                        -top-2
-                        flex
-                        h-4
-                        min-w-4
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-black
-                        px-1
-                        text-[9px]
-                        font-semibold
-                        text-white
-                      "
-                    >
-                      {wishlist.length}
-                    </span>
-
-                  )}
-
-                </div>
-
+                  className={
+                    wishlist.length > 0
+                      ? "fill-red-500 text-red-500"
+                      : ""
+                  }
+                />
 
                 <span>
                   Wishlist
                 </span>
 
-              </button>
 
-
-              {/* MOBILE WISHLIST PANEL */}
-
-              {isWishlistOpen && (
-
-                <div
-                  className="
-                    mx-4
-                    mb-2
-                    rounded-xl
-                    border
-                    bg-gray-50
-                    p-3
-                  "
-                >
-
-                  {wishlist.length === 0 ? (
-
-                    <div
-                      className="
-                        py-5
-                        text-center
-                      "
-                    >
-
-                      <Heart
-                        size={28}
-
-                        className="
-                          mx-auto
-                          text-gray-300
-                        "
-                      />
-
-
-                      <p
-                        className="
-                          mt-2
-                          text-xs
-                          text-gray-500
-                        "
-                      >
-                        Your wishlist is empty.
-                      </p>
-
-                    </div>
-
-                  ) : (
-
-                    <div
-                      className="
-                        space-y-2
-                      "
-                    >
-
-                      {wishlist.map(
-                        (product) => (
-
-                          <div
-                            key={product.id}
-
-                            className="
-                              flex
-                              items-center
-                              gap-3
-                              rounded-lg
-                              bg-white
-                              p-2
-                            "
-                          >
-
-                            <img
-                              src={
-                                product.image
-                              }
-
-                              alt={
-                                product.name
-                              }
-
-                              className="
-                                h-12
-                                w-12
-                                shrink-0
-                                rounded-lg
-                                object-cover
-                              "
-                            />
-
-
-                            <div
-                              className="
-                                min-w-0
-                                flex-1
-                              "
-                            >
-
-                              <h3
-                                className="
-                                  truncate
-                                  text-xs
-                                  font-medium
-                                  text-gray-900
-                                "
-                              >
-                                {
-                                  product.name
-                                }
-                              </h3>
-
-
-                              <p
-                                className="
-                                  text-[11px]
-                                  text-gray-500
-                                "
-                              >
-                                {
-                                  product.category
-                                }
-                              </p>
-
-                            </div>
-
-
-                            <button
-                              type="button"
-
-                              onClick={() =>
-                                toggleWishlist(
-                                  product
-                                )
-                              }
-
-                              className="
-                                shrink-0
-                                rounded-full
-                                p-1.5
-                                hover:bg-gray-100
-                              "
-                            >
-
-                              <Heart
-                                size={16}
-
-                                className="
-                                  fill-red-500
-                                  text-red-500
-                                "
-                              />
-
-                            </button>
-
-                          </div>
-
-                        )
-                      )}
-
-                    </div>
-
-                  )}
-
-                </div>
-
-              )}
-
-
-              {/* MOBILE CART */}
-
-              <button
-                type="button"
-
-                className="
-                  relative
-                  flex
-                  w-full
-                  items-center
-                  gap-3
-                  rounded-lg
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-gray-700
-                  transition
-                  hover:bg-gray-100
-                  hover:text-black
-                "
-              >
-
-                <ShoppingBag size={19} />
-
-                <span>
-                  Cart
-                </span>
-
-
-                {cart.length > 0 && (
+                {wishlist.length > 0 && (
 
                   <span
                     className="
@@ -2258,12 +2499,349 @@ const Navbar = () => {
                       text-white
                     "
                   >
-                    {cart.length}
+                    {wishlist.length}
                   </span>
 
                 )}
 
               </button>
+
+
+              {/* ==================================================
+                  MOBILE CART
+                  ================================================== */}
+
+              <button
+                type="button"
+
+                onClick={toggleCart}
+
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-lg
+                  px-4
+                  py-3
+                  text-sm
+                  font-medium
+                  text-gray-700
+                  hover:bg-gray-100
+                  hover:text-black
+                "
+              >
+
+                <ShoppingBag size={19} />
+
+                <span>
+                  Cart
+                </span>
+
+
+                {cartQuantity > 0 && (
+
+                  <span
+                    className="
+                      ml-auto
+                      flex
+                      h-5
+                      min-w-5
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-black
+                      px-1
+                      text-[10px]
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    {cartQuantity}
+                  </span>
+
+                )}
+
+              </button>
+
+
+              {/* MOBILE CART PANEL */}
+
+              {isCartOpen && (
+
+                <div
+                  className="
+                    mx-4
+                    mb-2
+                    rounded-xl
+                    border
+                    bg-gray-50
+                    p-3
+                  "
+                >
+
+                  {cart.length === 0 ? (
+
+                    <p
+                      className="
+                        py-5
+                        text-center
+                        text-xs
+                        text-gray-500
+                      "
+                    >
+                      Your cart is empty.
+                    </p>
+
+                  ) : (
+
+                    <>
+
+                      <div
+                        className="
+                          space-y-2
+                        "
+                      >
+
+                        {cart.map(
+                          (product) => (
+
+                            <div
+                              key={
+                                product.id
+                              }
+
+                              className="
+                                rounded-lg
+                                bg-white
+                                p-2
+                              "
+                            >
+
+                              <div
+                                className="
+                                  flex
+                                  gap-3
+                                "
+                              >
+
+                                <img
+                                  src={
+                                    product.image
+                                  }
+
+                                  alt={
+                                    product.name
+                                  }
+
+                                  className="
+                                    h-12
+                                    w-12
+                                    shrink-0
+                                    rounded-lg
+                                    object-cover
+                                  "
+                                />
+
+
+                                <div
+                                  className="
+                                    min-w-0
+                                    flex-1
+                                  "
+                                >
+
+                                  <h3
+                                    className="
+                                      truncate
+                                      text-xs
+                                      font-medium
+                                      text-gray-900
+                                    "
+                                  >
+                                    {
+                                      product.name
+                                    }
+                                  </h3>
+
+
+                                  <p
+                                    className="
+                                      text-xs
+                                      text-gray-500
+                                    "
+                                  >
+                                    AED{" "}
+                                    {
+                                      product.price.toLocaleString()
+                                    }
+                                  </p>
+
+
+                                  <div
+                                    className="
+                                      mt-2
+                                      flex
+                                      items-center
+                                      justify-between
+                                    "
+                                  >
+
+                                    <div
+                                      className="
+                                        flex
+                                        items-center
+                                        rounded
+                                        border
+                                      "
+                                    >
+
+                                      <button
+                                        type="button"
+
+                                        onClick={() =>
+                                          decreaseQuantity(
+                                            product.id
+                                          )
+                                        }
+
+                                        className="
+                                          px-2
+                                          py-1
+                                          text-xs
+                                          hover:bg-gray-100
+                                        "
+                                      >
+                                        -
+                                      </button>
+
+
+                                      <span
+                                        className="
+                                          min-w-6
+                                          text-center
+                                          text-xs
+                                        "
+                                      >
+                                        {
+                                          product.quantity
+                                        }
+                                      </span>
+
+
+                                      <button
+                                        type="button"
+
+                                        onClick={() =>
+                                          increaseQuantity(
+                                            product.id
+                                          )
+                                        }
+
+                                        className="
+                                          px-2
+                                          py-1
+                                          text-xs
+                                          hover:bg-gray-100
+                                        "
+                                      >
+                                        +
+                                      </button>
+
+                                    </div>
+
+
+                                    <button
+                                      type="button"
+
+                                      onClick={() =>
+                                        removeFromCart(
+                                          product.id
+                                        )
+                                      }
+
+                                      className="
+                                        text-[11px]
+                                        text-red-500
+                                      "
+                                    >
+                                      Remove
+                                    </button>
+
+                                  </div>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                          )
+                        )}
+
+                      </div>
+
+
+                      <div
+                        className="
+                          mt-3
+                          border-t
+                          pt-3
+                        "
+                      >
+
+                        <div
+                          className="
+                            flex
+                            justify-between
+                            text-sm
+                            font-semibold
+                          "
+                        >
+
+                          <span>
+                            Total
+                          </span>
+
+
+                          <span>
+                            AED{" "}
+                            {
+                              cartTotal.toLocaleString()
+                            }
+                          </span>
+
+                        </div>
+
+
+                        <button
+                          type="button"
+
+                          className="
+                            mt-3
+                            w-full
+                            rounded-lg
+                            bg-black
+                            px-4
+                            py-2.5
+                            text-xs
+                            font-medium
+                            text-white
+                            hover:bg-gray-800
+                          "
+                        >
+                          Checkout
+                        </button>
+
+                      </div>
+
+                    </>
+
+                  )}
+
+                </div>
+
+              )}
 
             </div>
 
