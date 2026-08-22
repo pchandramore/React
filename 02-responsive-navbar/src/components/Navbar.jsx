@@ -56,6 +56,43 @@ const Navbar = () => {
 
   /*
   ========================================================
+  JEWELLERY PRODUCTS DATA
+  ========================================================
+  */
+
+  const products = [
+    {
+      id: 1,
+      name: "Classic Gold Necklace",
+      category: "Gold Jewellery",
+      image: "/jewellery/gold.jpg",
+    },
+
+    {
+      id: 2,
+      name: "Diamond Earrings",
+      category: "Diamond Jewellery",
+      image: "/jewellery/diamond.jpg",
+    },
+
+    {
+      id: 3,
+      name: "Bridal Gold Set",
+      category: "Bridal Jewellery",
+      image: "/jewellery/bridal.jpg",
+    },
+
+    {
+      id: 4,
+      name: "Gold Hoop Earrings",
+      category: "Earrings",
+      image: "/jewellery/earrings.jpg",
+    },
+  ];
+
+
+  /*
+  ========================================================
   MOBILE MENU STATE
   ========================================================
 
@@ -99,14 +136,21 @@ const Navbar = () => {
   SEARCH STATE
   ========================================================
 
-  isSearchOpen = controls whether search bar is visible.
+  isSearchOpen
+  ----------------
+  Controls whether the search area is visible.
 
-  searchQuery = stores whatever the user types.
+
+  searchQuery
+  ----------------
+  Stores what the user types into the search box.
   */
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] =
+    useState(false);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] =
+    useState("");
 
 
   /*
@@ -162,6 +206,50 @@ const Navbar = () => {
 
   /*
   ========================================================
+  FILTER PRODUCTS
+  ========================================================
+
+  We search both:
+
+  1. Product name
+  2. Product category
+
+  Example:
+
+  "gold"
+
+  can match:
+
+  Classic Gold Necklace
+  Bridal Gold Set
+  Gold Hoop Earrings
+  */
+
+  const filteredProducts = products.filter(
+    (product) => {
+
+      const searchText =
+        searchQuery.toLowerCase().trim();
+
+
+      return (
+        product.name
+          .toLowerCase()
+          .includes(searchText)
+
+        ||
+
+        product.category
+          .toLowerCase()
+          .includes(searchText)
+      );
+
+    }
+  );
+
+
+  /*
+  ========================================================
   TOGGLE MOBILE MENU
   ========================================================
   */
@@ -194,7 +282,9 @@ const Navbar = () => {
 
   const toggleMobileCollections = () => {
 
-    setIsMobileCollectionsOpen((prev) => !prev);
+    setIsMobileCollectionsOpen(
+      (prev) => !prev
+    );
 
   };
 
@@ -693,13 +783,15 @@ const Navbar = () => {
 
 
       {/* ==================================================
-          SEARCH BAR
+          SEARCH AREA
           ================================================== */}
 
       <div
         className={`
           overflow-hidden
+
           border-t
+
           bg-white
 
           transition-all
@@ -707,11 +799,15 @@ const Navbar = () => {
 
           ${
             isSearchOpen
-              ? "max-h-24 opacity-100"
+              ? "max-h-[500px] opacity-100"
               : "max-h-0 opacity-0"
           }
         `}
       >
+
+        {/* ==================================================
+            SEARCH INPUT ROW
+            ================================================== */}
 
         <div
           className="
@@ -727,6 +823,7 @@ const Navbar = () => {
           "
         >
 
+
           {/* SEARCH ICON */}
 
           <Search
@@ -734,6 +831,7 @@ const Navbar = () => {
 
             className="
               shrink-0
+
               text-gray-500
             "
           />
@@ -799,6 +897,135 @@ const Navbar = () => {
           </button>
 
         </div>
+
+
+        {/* ==================================================
+            SEARCH RESULTS
+            ================================================== */}
+
+        {isSearchOpen && searchQuery && (
+
+          <div
+            className="
+              mx-auto
+
+              max-w-7xl
+
+              px-6
+
+              pb-4
+            "
+          >
+
+            {filteredProducts.length > 0 ? (
+
+              <div
+                className="
+                  grid
+
+                  gap-3
+
+                  sm:grid-cols-2
+                "
+              >
+
+                {filteredProducts.map((product) => (
+
+                  <a
+                    key={product.id}
+
+                    href="#"
+
+                    className="
+                      flex
+
+                      items-center
+
+                      gap-3
+
+                      rounded-lg
+
+                      border
+
+                      p-3
+
+                      transition
+
+                      hover:bg-gray-50
+                    "
+                  >
+
+                    {/* PRODUCT IMAGE */}
+
+                    <img
+                      src={product.image}
+
+                      alt={product.name}
+
+                      className="
+                        h-14
+                        w-14
+
+                        shrink-0
+
+                        rounded-lg
+
+                        object-cover
+                      "
+                    />
+
+
+                    {/* PRODUCT INFORMATION */}
+
+                    <div>
+
+                      <h3
+                        className="
+                          text-sm
+                          font-medium
+                          text-gray-900
+                        "
+                      >
+                        {product.name}
+                      </h3>
+
+
+                      <p
+                        className="
+                          text-xs
+                          text-gray-500
+                        "
+                      >
+                        {product.category}
+                      </p>
+
+                    </div>
+
+                  </a>
+
+                ))}
+
+              </div>
+
+            ) : (
+
+              <p
+                className="
+                  py-2
+
+                  text-sm
+
+                  text-gray-500
+                "
+              >
+                No jewellery found.
+              </p>
+
+            )}
+
+          </div>
+
+        )}
 
       </div>
 
@@ -1269,4 +1496,3 @@ const Navbar = () => {
 
 
 export default Navbar;
-
